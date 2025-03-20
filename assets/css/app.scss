@@ -1,0 +1,17 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container {
+    max-width: 1336px;
+    margin: auto;
+    background: var(--color-gray-200);
+}
+
+.router-link-active {
+    color: #42b983;
+}
+.router-link-active .sidebar-item {
+    border-color: rgb(var(--color-gray-200) / 1);
+}

@@ -1,0 +1,95 @@
+/* styles/typography.css */
+/* Custom heading styles to override Tailwind defaults */
+
+@layer base {
+    body {
+        @apply text-gray-500
+    }
+    article {
+        h1, h2, h3, h4, h5, h6 {
+            @apply text-gray-800 hover:text-primary;
+        }
+
+        pre {
+            @apply p-4 bg-gray-300 rounded-lg overflow-auto;
+        }
+
+        h1 {
+            @apply text-4xl font-bold my-6 leading-tight;
+        }
+
+        h2 {
+            @apply text-3xl font-semibold my-5 leading-tight;
+        }
+
+        h3 {
+            @apply text-2xl font-semibold my-4;
+        }
+
+        h4 {
+            @apply text-xl font-medium my-3;
+        }
+
+        h5 {
+            @apply text-lg font-medium my-2;
+        }
+
+        h6 {
+            @apply text-base font-medium my-2;
+        }
+        p {
+            @apply my-3 text-gray-500;
+        }
+
+        ul {
+            @apply pl-5 list-disc my-4;
+        }
+
+        ul > li {
+            @apply mb-2 text-gray-500;
+        }
+
+        ul > li > strong {
+            @apply text-gray-800;
+        }
+
+        /* Nested lists */
+        ul > li > ul {
+            @apply mt-2 mb-0;
+        }
+
+        ul > li > ul > li {
+            @apply text-gray-800;
+        }
+
+        a[rel="nofollow"] {
+            @apply text-primary;
+        }
+    }
+    .dark {
+        body {
+            @apply text-gray-300
+        }
+        article {
+            h1, h2, h3, h4, h5, h6 {
+                @apply text-gray-200 hover:text-primary;
+            }
+            p {
+                @apply text-gray-200;
+            }
+            ul > li {
+                @apply mb-2 text-gray-300;
+            }
+    
+            ul > li > strong {
+                @apply text-gray-200;
+            }
+            ul > li > ul > li {
+                @apply text-gray-300;
+            }
+            pre {
+                @apply bg-gray-900;
+            }
+        }
+    }
+}
