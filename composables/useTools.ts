@@ -67,8 +67,6 @@ export const useTools = () => {
             name: ""
           };
           
-          console.log(page.properties.file)
-          
           const fileProperty = page.properties.file;
           if (fileProperty && fileProperty.type === "files" && fileProperty.files.length > 0) {
             const file = fileProperty.files[0];
@@ -87,7 +85,7 @@ export const useTools = () => {
           
           const nameProperty = page.properties.Name;
           if (nameProperty && nameProperty.type === "title" && nameProperty.title.length > 0) {
-            const titleText = nameProperty.title.map((t: any) => t.plain_text).join("");
+            const titleText = nameProperty.title.map((t: { plain_text: string }) => t.plain_text).join("");
             if (titleText) {
               result.name = titleText;
               result.alt = titleText;

@@ -1,6 +1,12 @@
-import { _keyframes } from "#tailwind-config/theme";
-
 export default {
+    content: [
+        './assets/**/*.{vue,js,css}',
+        './components/**/*.{vue,js}',
+        './layouts/**/*.vue',
+        './pages/**/*.vue',
+        './plugins/**/*.{js,ts}',
+        './nuxt.config.{js,ts}',
+      ],
     theme: {
         extend: {
             colors: {
@@ -18,15 +24,6 @@ export default {
                     '950': '#292929',
                 },
             },
-            keyframes: {
-                slowSpining: {
-                '0%': { transform: 'rotate(0deg)' },
-                '100%': { transform: 'rotate(360deg)' },
-                }
-            },
-            animation: {
-                'slow-spining': 'slowSpining 30s linear infinite',
-            }
-        }
+        },
     },
 }

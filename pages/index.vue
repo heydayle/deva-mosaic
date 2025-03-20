@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { NuxtLoadingIndicator } from '#components';
+import StackGrid from '@crob/vue-stack-grid';
 
 definePageMeta({
   layout: "landing",
   name: 'Home'
 });
 useHead({
-  title: 'Lib',
+  title: 'Library of memory!',
   meta: [
     {
       name: 'description',
-      content: 'Welcome to Nuxt Boilerplate v3!'
+      content: 'Memories of Thinh'
     }
   ]
 });
@@ -18,7 +20,7 @@ const { notionGetImages } = useNotion()
 const { convertNotionPagesToImageList } = useTools()
 const { data } = await notionGetImages()
 
-const images = computed(() => data.value && convertNotionPagesToImageList(data.value.results).filter(item => item.src) || [])
+const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src) || [])
 
 const MODES = {
   FOCUS: 0,
@@ -27,17 +29,32 @@ const MODES = {
 const itemHover = ref()
 const mode = ref(MODES.FOCUS)
 
+const stackGridRef = ref()
+const isReady = ref(false)
+
+watch(images, () => {
+  isReady.value = true
+  if (stackGridRef.value) {
+    stackGridRef.value.reflow()
+  }
+}, { immediate: true })
+
 </script>
 <template>
   <div>
     <div class="container">
-      <div class="gallery">
-        <div v-for="(item, index) in images" :key="index" class="gallery-item">
-          <NuxtImg loading="lazy" format="webp"
-            :class="{ 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS }" :src="item.src"
-            alt="img" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" />
-        </div>
-      </div>
+      <StackGrid ref="stackGridRef" :items="images" :column-min-width="300" :gutter-width="10" :gutter-height="10">
+        <template #item="{ item }">
+          <div>
+            <NuxtImg loading="lazy"
+              v-show="isReady"
+              format="webp"
+              class="h-full object-cover block"
+              :class="{ 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS }" :src="item.src"
+              alt="img" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" />
+          </div>
+        </template>
+      </StackGrid>
     </div>
   </div>
 </template>

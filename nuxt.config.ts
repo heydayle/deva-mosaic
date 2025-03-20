@@ -12,14 +12,10 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/eslint-module',
     '@nuxtjs/mdc',
+    '@nuxtjs/tailwindcss',
   ],
   colorMode: {
     preference: 'dark',
-  },
-  image: {
-    domains: ['nuxt-boilerplate-starter.vercel.app'],
-    provider: 'ipx',
-    dir: 'public/images',
   },
   css: ['@/assets/styles.css'],
   runtimeConfig: {

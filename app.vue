@@ -40,8 +40,10 @@ useHead({
       name: 'og:image',
       content: '/cover.png',
     },
-  ]
+  ],
+  script: [{ src: 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js' }]
 })
+
 </script>
 <template>
   <div>
