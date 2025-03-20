@@ -3,6 +3,7 @@
 @import "css/app.scss";
 @import "./css/typography.scss";
 @import "./css/animate.scss";
+@import './css/_gallegy.scss';
 
 html {
     font-family: "Be Vietnam Pro", serif;

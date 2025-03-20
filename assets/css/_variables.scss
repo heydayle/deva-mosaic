@@ -1,0 +1,24 @@
+$sm: 768px;
+$md: 1024px;
+$lg: 1366px;
+$xl: 1728px;
+
+@media screen and (max-width: $md) {
+    .container {
+        max-width: 98%;
+        margin: auto;
+    }
+}
+
+@media screen and (min-width: $md) {
+    .container {
+        max-width: 90%;
+        margin: auto;
+    }
+}
+@media screen and (min-width: $xl) {
+    .container {
+        max-width: 80%;
+        margin: auto;
+    }
+}

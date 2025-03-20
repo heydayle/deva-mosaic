@@ -5,8 +5,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/image',
-    'nuxt-vue3-google-signin',
-    '@sidebase/nuxt-auth',
     '@nuxt/ui',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
@@ -24,37 +22,16 @@ export default defineNuxtConfig({
     dir: 'public/images',
   },
   css: ['@/assets/styles.css'],
-  googleSignIn: {
-    clientId: process.env.GG_CLIENT_ID,
-  },
   runtimeConfig: {
     public: {
-        GOOGLE_API_KEY: process.env.GG_API_KEY,
-        SPREAD_SHEET_ID: process.env.SPREAD_SHEET_ID,
-        telegramBotToken: process.env.TELEGRAM_BOT_TOKEN
+        NOTION_SECRET_KEY: process.env.NOTION_SECRET_KEY,
+        NOTION_IMAGE_DB: process.env.NOTION_IMAGE_DB,
     }
   },
-  // nitro: {
-  //   publicAssets: [{
-  //     baseURL: "assets/images",
-  //     dir: "public/images",
-  //     maxAge: 60 * 60 * 24 * 7, // 7 days
-  //   },],
-  // },
   vite: {
     server: {
       allowedHosts: ['localhost', '.dev'],
     },
-  },
-  auth: {
-    isEnabled: true,
-    baseURL: 'http://localhost:3000/api/auth',
-    provider: {
-      type: 'authjs'
-    },
-    globalAppMiddleware: {
-      isEnabled: false
-    }
   },
   i18n: {
     defaultLocale: 'en',
