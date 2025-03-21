@@ -4,9 +4,9 @@ export default defineAppConfig({
     gray: 'cool'
   },
   app: {
-    version: 'v0.0.1-alpha',
+    version: 'Devaloka',
     meta: {
-      title: 'Nuxt Boilerplate',
+      title: 'Library Of Memory',
       description: 'Nuxt Starter with Vite',
       keywords: 'nuxt, vite, starter',
       image: '/cover.png',

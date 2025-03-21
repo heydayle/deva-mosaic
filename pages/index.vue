@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NuxtLoadingIndicator } from '#components';
 import StackGrid from '@crob/vue-stack-grid';
 
 definePageMeta({
@@ -22,12 +21,16 @@ const { data } = await notionGetImages()
 
 const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src) || [])
 
+
+const store = useStore()
+const { isFocusing } = storeToRefs(store)
+
 const MODES = {
-  FOCUS: 0,
-  VIEW: 1
+  FOCUS: true,
+  VIEW: false
 }
 const itemHover = ref()
-const mode = ref(MODES.FOCUS)
+const mode = computed(() => isFocusing.value)
 
 const stackGridRef = ref()
 const count = ref(0)
@@ -41,19 +44,22 @@ const imageIsReady = () => {
 </script>
 <template>
   <div>
-    <div class="container">
-      <StackGrid ref="stackGridRef" :items="images" :column-min-width="300" :gutter-width="10" :gutter-height="10">
+    <div class="container py-4">
+      <StackGrid ref="stackGridRef" :items="images" :column-min-width="300" :gutter-width="10" :gutter-height="10" class="gallery">
         <template #item="{ item }">
-          <div>
             <NuxtImg
+              :src="item.src"
+              :class="[
+                { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
+                { 'hover:cursor-none hover:ring hover:ring-8 hover:ring-white-100 hover:rounded-md': mode === MODES.FOCUS }]"
+              class="transition duration-300 h-full object-cover block"
+              alt="img"
               loading="lazy"
               format="webp"
-              class="h-full object-cover block"
-              :class="{ 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS }" :src="item.src"
-              alt="img" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" 
+              @mouseenter="itemHover = item.id"
+              @mouseleave="itemHover = ''" 
               @load="imageIsReady"
             />
-          </div>
         </template>
       </StackGrid>
     </div>

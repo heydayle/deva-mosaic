@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
 
 export const useStore = defineStore('counter', () => {
-    const count = ref(0)
-    const name = ref('Eduardo')
-    const doubleCount = computed(() => count.value * 2)
-    function increment() {
-      count.value++
+    const isFocusing = ref(false)
+    
+    function onFocusMode() {
+      isFocusing.value = !isFocusing.value
     }
   
-    return { count, name, doubleCount, increment }
+    return { isFocusing, onFocusMode }
 })
