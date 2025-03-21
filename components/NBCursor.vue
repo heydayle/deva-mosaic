@@ -1,8 +1,13 @@
 <template>
-    <div
-        ref="refCursor"
-        :class="cursorClasses"
-        :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"></div>
+  <div class="h-full">
+      <div
+          ref="refCursor"
+          :class="cursorClasses"
+          class="bg-white"
+          :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"
+      />
+      <div ref="refBackPoint" class="back-object" />
+  </div>
   </template>
   
   <script setup>
@@ -11,16 +16,17 @@
   import {gsap} from "gsap";
 
   const refCursor = ref()
-  
+  const refBackPoint = ref()
+
   const {x, y} = useMouse({
     type: 'client'
   });
   
   // Starting size/position of the cursor
-  let startingSize = 22;
-  let size = ref(22);
-  let outputX = ref(x.value);
-  let outputY = ref(y.value);
+  const startingSize = 22;
+  const size = ref(22);
+  const outputX = ref(x.value);
+  const outputY = ref(y.value);
   
   // Smoothly move the cursor to the mouse position
   gsap.ticker.add(() => {
@@ -40,6 +46,8 @@
   watchOnce(x, () => {
     isCursorVisible.value = true;
   })
+
+
   
   /**
    * Respond to any DOM element with the class of ".mouse-*" by increasing the size of the cursor
@@ -50,40 +58,27 @@
     document.body.addEventListener('mouseover', (event) => {
         if (event.target.classList.contains(className)) {
           const rect = event.target.getBoundingClientRect();
-          console.log(rect);
-          console.log(size);
-          
-          
-            gsap.killTweensOf(size);
-            gsap.to(size, { duration: 0.2, value: cursorSize });
-            if (className === 'mouse-object')
-              gsap.to(event.target, {
-                  // position: 'fixed',
-                  // scale: 1.2,
-                  // zIndex: 9999,
-                  borderRadius: 0,
-                  backgroundColor: 'transparent',
-                  borderWidth: '16px',
-                  borderStyle: 'solid',
-                  borderColor: '#FFFFFF', // Adjust color as needed
-                  duration: 0.2
-              });
+          gsap.killTweensOf(size);
+          gsap.to(size, { duration: 0.2, value: cursorSize  });
+          if (className === 'mouse-object') {
+            gsap.fromTo(refBackPoint.value, {
+              position: 'fixed',
+              background: '#FFFFFF',
+            }, {
+              x: rect.x - 15,
+              y: rect.y  - 15,
+              width: rect.width + 30,
+              height: rect.height + 30,
+              duration: 0.7,
+            })
+          }
+
         }
-    }); 
+    });
     document.body.addEventListener('mouseout', (event) => {
       if (event.target.classList.contains(className)) {
         gsap.killTweensOf(size);
         gsap.to(size, {duration: 0.2, value: startingSize});
-        if (className === 'mouse-object')
-            gsap.to(event.target, {
-                // position: 'unset',
-                // zIndex: 'unset',
-                // scale: 1,
-                borderRadius: 0,
-                backgroundColor: 'transparent',
-                borderWidth: '0px',
-                duration: 0.2
-            });
       }
     });
   };
@@ -92,7 +87,7 @@
     setupMouseEffect('mouse-lg', 200);
     setupMouseEffect('mouse-md', 100);
     setupMouseEffect('mouse-sm', 60);
-    setupMouseEffect('mouse-object', 60);
+    setupMouseEffect('mouse-object', 20);
   });
   
   // Reset the cursor size when the route changes
@@ -113,7 +108,6 @@
   .cursor {
     position: fixed;
     z-index: 10000;
-    background-color: white;
     border: 2px solid white;
     top: 0;
     left: 0;

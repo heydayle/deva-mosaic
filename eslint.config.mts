@@ -10,6 +10,7 @@ const config = createConfigForNuxt({
     ignores: ["**/*.config.{ts,js}", "!**/eslint.config.js", "**/*.d.ts"],
     rules: {
         'vue/multi-word-component-names': "off",
+        '@typescript-eslint/no-explicit-any': "off",
     }
 })
 export default config

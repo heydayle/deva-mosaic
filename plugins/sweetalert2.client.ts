@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.css'
+import type {VueInstance} from "@vueuse/core";
 
 export const SweetAlertOptions = {
   reverseButtons: true,
@@ -13,7 +14,7 @@ export const SweetAlertOptions = {
   showCancelButton: false,
 }
 const $swal = {
-  install: (Vue: any, options: any) => {
+  install: (Vue: VueInstance, options: any) => {
     Vue.provide('Swal', Swal.mixin(options))
   },
 }

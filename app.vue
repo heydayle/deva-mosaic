@@ -46,7 +46,7 @@ useHead({
 
 </script>
 <template>
-  <div>
+  <div class="">
     <client-only>
       <LazyNBCursor/>
     </client-only>

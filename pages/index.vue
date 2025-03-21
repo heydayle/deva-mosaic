@@ -49,11 +49,23 @@ const onDockingImages = () => {
 onMounted(() => {
   onDockingImages()
 })
+
+const minWidth = ref(200)
+// const onIncrease = () => {
+//   minWidth.value = minWidth.value - 100
+//   stackGridRef.value.reflow()
+// }
+// const onDecrease = () => {
+//   minWidth.value = minWidth.value + 100
+//   stackGridRef.value.reflow()
+// }
 </script>
 <template>
   <div>
-    <div class="container py-4">
-      <StackGrid ref="stackGridRef" :items="images" :column-min-width="300" :gutter-width="10" :gutter-height="10" class="gallery">
+    <div id="gallery" class="container py-4 relative">
+<!--      <UButton @click="onIncrease">Increase</UButton>-->
+<!--      <UButton @click="onDecrease">Decrease</UButton>-->
+      <StackGrid ref="stackGridRef" :items="images" :column-min-width="minWidth" :gutter-width="20" :gutter-height="20" class="gallery">
         <template #item="{ item }">
             <NuxtImg
               :src="item.src"

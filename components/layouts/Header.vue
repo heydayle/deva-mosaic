@@ -12,7 +12,6 @@ const github = app.socials[0]
         </UButton>
         <div class="fixed z-[99999] bottom-12 right-12 flex flex-col space-y-4">
           <NBFocusMode />
-          <NBColorMode />
         </div>
         <SelectLanguage />
       </div>
