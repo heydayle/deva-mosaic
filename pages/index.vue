@@ -30,15 +30,14 @@ const itemHover = ref()
 const mode = ref(MODES.FOCUS)
 
 const stackGridRef = ref()
-const isReady = ref(false)
+const count = ref(0)
 
-watch(images, () => {
-  isReady.value = true
-  if (stackGridRef.value) {
+const imageIsReady = () => {
+  if (count.value < images.value.length) {
     stackGridRef.value.reflow()
+    count.value++
   }
-}, { immediate: true })
-
+}
 </script>
 <template>
   <div>
@@ -46,12 +45,14 @@ watch(images, () => {
       <StackGrid ref="stackGridRef" :items="images" :column-min-width="300" :gutter-width="10" :gutter-height="10">
         <template #item="{ item }">
           <div>
-            <NuxtImg loading="lazy"
-              v-show="isReady"
+            <NuxtImg
+              loading="lazy"
               format="webp"
               class="h-full object-cover block"
               :class="{ 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS }" :src="item.src"
-              alt="img" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" />
+              alt="img" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" 
+              @load="imageIsReady"
+            />
           </div>
         </template>
       </StackGrid>
