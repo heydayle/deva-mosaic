@@ -47,6 +47,9 @@ useHead({
 </script>
 <template>
   <div>
+    <client-only>
+      <LazyNBCursor/>
+    </client-only>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

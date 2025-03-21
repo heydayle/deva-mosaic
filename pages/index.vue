@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import StackGrid from '@crob/vue-stack-grid';
+import { gsap } from "gsap";
 
 definePageMeta({
   layout: "landing",
@@ -21,7 +22,6 @@ const { data } = await notionGetImages()
 
 const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src) || [])
 
-
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
 
@@ -41,6 +41,14 @@ const imageIsReady = () => {
     count.value++
   }
 }
+
+const onDockingImages = () => {
+  gsap.set('.image-item', { scale: 1 })
+  gsap.timeline().from('.image-item', { scale: 0, ease: 'back' })
+}
+onMounted(() => {
+  onDockingImages()
+})
 </script>
 <template>
   <div>
@@ -51,8 +59,8 @@ const imageIsReady = () => {
               :src="item.src"
               :class="[
                 { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
-                { 'hover:cursor-none hover:ring hover:ring-8 hover:ring-white-100 hover:rounded-md': mode === MODES.FOCUS }]"
-              class="transition duration-300 h-full object-cover block"
+                { 'hover:rounded-md': mode === MODES.FOCUS }]"
+              class="mouse-object image-item transition duration-300 h-full object-cover block"
               alt="img"
               loading="lazy"
               format="webp"

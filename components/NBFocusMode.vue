@@ -22,7 +22,13 @@ const changeFocusMode = () => {
 
 <template>
   <ClientOnly>
-    <UButton size="xl" color="gray" :icon="isFocusing ? 'ph:cube-focus-fill' : 'tabler:layout-collage'"
-      :ui="{ rounded: 'rounded-full' }" @click="changeFocusMode" />
+    <UButton
+      size="xl"
+      color="gray"
+      :icon="isFocusing ? 'ph:cube-focus-fill' : 'tabler:layout-collage'"
+      :ui="{ rounded: 'rounded-full' }"
+      class="mouse-sm"
+      @click="changeFocusMode"
+    />
   </ClientOnly>
 </template>

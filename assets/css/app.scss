@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    cursor: none;
+}
 .container {
     max-width: 1336px;
     margin: auto;
