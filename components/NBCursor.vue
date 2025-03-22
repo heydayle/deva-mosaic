@@ -16,6 +16,7 @@
   import {gsap} from "gsap";
 
   const refCursor = ref()
+  const currentActiveObject = ref()
   const refBackPoint = ref()
 
   const {x, y} = useMouse({
@@ -47,7 +48,8 @@
     isCursorVisible.value = true;
   })
 
-
+  const mouseX = ref(0);
+  const mouseY = ref(0);
   
   /**
    * Respond to any DOM element with the class of ".mouse-*" by increasing the size of the cursor
@@ -55,30 +57,77 @@
    * @param cursorSize - The size of the cursor when the element is hovered
    */
   const setupMouseEffect = (className, cursorSize) => {
+
+    // Update the cursor position when the mouse moves
+    document.addEventListener("mousemove", (event) => {
+      mouseX.value = event.clientX;
+      mouseY.value = event.clientY;
+      if (!event.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery"))
+        gsap.to(refBackPoint.value,{
+          duration: 0.7,
+          x: mouseX.value,
+          y: mouseY.value,
+          width: size.value,
+          height: size.value
+        });
+      if (!event.target?.classList || !event.target?.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
+        currentActiveObject.value = null;
+      }
+    });
+    // Update the cursor position when the user scrolls
+    document.addEventListener('scroll', () => {
+      const hoveredElement = document.elementFromPoint(mouseX.value, mouseY.value);
+      if (hoveredElement && hoveredElement.classList.contains("mouse-object")) {
+        const rect = hoveredElement.getBoundingClientRect();
+        gsap.to(refBackPoint.value, {
+          x: rect.x - 15,
+          y: rect.y  - 15,
+          width: rect.width + 30,
+          height: rect.height + 30,
+          duration: 0.6,
+        })
+      }
+    });
+    // Increase the size of the cursor when the user hovers over an element
     document.body.addEventListener('mouseover', (event) => {
         if (event.target.classList.contains(className)) {
           const rect = event.target.getBoundingClientRect();
           gsap.killTweensOf(size);
           gsap.to(size, { duration: 0.2, value: cursorSize  });
           if (className === 'mouse-object') {
+            currentActiveObject.value = event.target;
+            currentActiveObject.value.classList.add('mouse-active');
             gsap.fromTo(refBackPoint.value, {
               position: 'fixed',
-              background: '#FFFFFF',
+              background: 'transparent',
             }, {
-              x: rect.x - 15,
-              y: rect.y  - 15,
-              width: rect.width + 30,
-              height: rect.height + 30,
+              x: rect.x - 20,
+              y: rect.y  - 20,
+              width: rect.width + 40,
+              height: rect.height + 40,
+              borderWidth: 4,
+              borderColor: 'white',
+              borderStyle: 'dashed',
               duration: 0.7,
             })
+            setTimeout(() => {
+              if (currentActiveObject.value?.src === event.target?.src)
+                gsap.to(refBackPoint.value, {
+                  x: rect.x - 10,
+                  y: rect.y  - 10,
+                  width: rect.width + 20,
+                  height: rect.height + 20,
+                  duration: 0.7,
+                  ease: 'power4.out'
+                })
+            }, 700)
           }
-
         }
     });
     document.body.addEventListener('mouseout', (event) => {
       if (event.target.classList.contains(className)) {
         gsap.killTweensOf(size);
-        gsap.to(size, {duration: 0.2, value: startingSize});
+        gsap.to(size, { duration: 0.2, value: startingSize });
       }
     });
   };
