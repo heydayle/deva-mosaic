@@ -5,7 +5,8 @@
           :class="cursorClasses"
           class="bg-white"
           :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"
-      />
+      >
+      </div>
       <div ref="refBackPoint" class="back-object" />
   </div>
   </template>
@@ -111,15 +112,17 @@
               duration: 0.7,
             })
             setTimeout(() => {
-              if (currentActiveObject.value?.src === event.target?.src)
+              if (currentActiveObject.value?.src === event.target?.src) {
+                const rectCurrent = currentActiveObject.value.getBoundingClientRect()
                 gsap.to(refBackPoint.value, {
-                  x: rect.x - 10,
-                  y: rect.y  - 10,
+                  x: rectCurrent.x - 10,
+                  y: rectCurrent.y - 10,
                   width: rect.width + 20,
                   height: rect.height + 20,
                   duration: 0.7,
                   ease: 'power4.out'
                 })
+              }
             }, 700)
           }
         }
