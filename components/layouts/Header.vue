@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const { app } = useAppConfig()
+const colorMode = useColorMode()
 const github = app.socials[0]
+colorMode.value = 'dark'
 </script>
 <template>
   <div class="bg-white/20 shadow-lg ring-1 ring-black/5">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import StackGrid from '@crob/vue-stack-grid';
 import { gsap } from "gsap";
+import { useWindowSize } from "@vueuse/core";
 
 definePageMeta({
   layout: "landing",
@@ -67,7 +68,22 @@ onMounted(() => {
   onDockingImages()
 })
 
-const minWidth = ref(200)
+const { width } = useWindowSize()
+const minWidth = ref(50)
+
+const setImageSize = () => {
+  const containerWidth = document.querySelector('.container')?.clientWidth
+  const imageSize = containerWidth && Math.round(containerWidth / 5) || 200
+  if (width.value < 500 && containerWidth)
+    minWidth.value = width.value - (width.value - containerWidth)
+  else minWidth.value = imageSize
+}
+
+onMounted(() => {
+  setImageSize()
+  document.addEventListener('resize', setImageSize)
+})
+
 const refProcress = ref()
 watch(isReady, (value) => {
   if (value) {
@@ -88,7 +104,7 @@ watch(isReady, (value) => {
     <div ref="refProcress" class="fixed top-0 left-0 z-[999] w-screen h-screen flex items-center px-20">
       <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
         <template #indicator="{ percent }">
-          <div class="text-right min-w-30" :style="{ width: `${percent}%` }">
+          <div class="text-center w-full">
             <span class="inline-flex text-primary-500 items-center">
               <UIcon name="line-md:downloading-loop" class="mr-2" /> {{ percent < 5 ? 'Initializing...' : percent < 20
                 ? ' Getting...' : percent < 60 ? ' Arranging...' : ' Loading...' }} </span>
