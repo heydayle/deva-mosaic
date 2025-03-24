@@ -14,6 +14,9 @@ export default defineNuxtConfig({
     '@nuxtjs/mdc',
     '@nuxtjs/tailwindcss',
   ],
+  routeRules: {
+    '/': { prerender: true }
+  },
   colorMode: {
     preference: 'dark',
   },
@@ -23,6 +26,9 @@ export default defineNuxtConfig({
         NOTION_SECRET_KEY: process.env.NOTION_SECRET_KEY,
         NOTION_IMAGE_DB: process.env.NOTION_IMAGE_DB,
     }
+  },
+  image: {
+    // domains: ['prod-files-secure.s3.us-west-2.amazonaws.com']
   },
   vite: {
     server: {

@@ -33,53 +33,78 @@ const itemHover = ref()
 const mode = computed(() => isFocusing.value)
 
 const stackGridRef = ref()
+const refGallery = ref()
 const count = ref(0)
 
 const imageIsReady = () => {
   if (count.value < images.value.length) {
     stackGridRef.value.reflow()
     count.value++
+    if (processPercent.value > 50) {
+      gsap.to(refGallery.value, {
+        visibility: 'visible',
+        duration: 0.5
+      })
+    }
   }
 }
+const processPercent = computed(() => Math.round((count.value / images.value.length) * 100))
+const isReady = computed(() => count.value === images.value.length)
 
 const onDockingImages = () => {
   gsap.set('.image-item', { scale: 1 })
   gsap.timeline().from('.image-item', { scale: 0, ease: 'back' })
 }
+const setOverflow = (hidden?: boolean) => {
+  const HTMLElement = document.querySelector('html')
+
+  if (hidden) HTMLElement?.setAttribute("style", "overflow: hidden")
+  else HTMLElement?.setAttribute("style", "overflow: auto")
+
+}
 onMounted(() => {
+  setOverflow(true)
   onDockingImages()
 })
 
 const minWidth = ref(200)
-// const onIncrease = () => {
-//   minWidth.value = minWidth.value - 100
-//   stackGridRef.value.reflow()
-// }
-// const onDecrease = () => {
-//   minWidth.value = minWidth.value + 100
-//   stackGridRef.value.reflow()
-// }
+const refProcress = ref()
+watch(isReady, (value) => {
+  if (value) {
+    setOverflow()
+    gsap.to(refProcress.value, {
+      opacity: 0,
+      duration: 0.7
+    })
+    gsap.to(refProcress.value, {
+      display: 'none',
+      delay: 1,
+    })
+  }
+})
 </script>
 <template>
   <div>
-    <div id="gallery" class="container py-4 relative">
-<!--      <UButton @click="onIncrease">Increase</UButton>-->
-<!--      <UButton @click="onDecrease">Decrease</UButton>-->
-      <StackGrid ref="stackGridRef" :items="images" :column-min-width="minWidth" :gutter-width="20" :gutter-height="20" class="gallery">
+    <div ref="refProcress" class="fixed top-0 left-0 z-[999] w-screen h-screen flex items-center px-20">
+      <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
+        <template #indicator="{ percent }">
+          <div class="text-right min-w-30" :style="{ width: `${percent}%` }">
+            <span class="inline-flex text-primary-500 items-center">
+              <UIcon name="line-md:downloading-loop" class="mr-2" /> {{ percent < 5 ? 'Initializing...' : percent < 20
+                ? ' Getting...' : percent < 60 ? ' Arranging...' : ' Loading...' }} </span>
+          </div>
+        </template>
+      </UProgress>
+    </div>
+    <div id="gallery" ref="refGallery" class="container py-4 relative invisible" :class="{ 'filter blur-xl': !isReady }">
+      <StackGrid ref="stackGridRef" :items="images" :column-min-width="minWidth" :gutter-width="20" :gutter-height="20"
+        class="gallery">
         <template #item="{ item }">
-            <NuxtImg
-              :src="item.src"
-              :class="[
-                { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
-                { 'hover:rounded-md': mode === MODES.FOCUS }]"
-              class="mouse-object image-item transition duration-300 h-full object-cover block"
-              alt="img"
-              loading="lazy"
-              format="webp"
-              @mouseenter="itemHover = item.id"
-              @mouseleave="itemHover = ''" 
-              @load="imageIsReady"
-            />
+          <NuxtImg :src="item.src" :class="[
+            { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
+            { 'hover:rounded-md': mode === MODES.FOCUS }]"
+            class="mouse-object image-item transition duration-300 h-full object-cover block" alt="img" loading="lazy"
+            format="webp" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" @load="imageIsReady" />
         </template>
       </StackGrid>
     </div>
