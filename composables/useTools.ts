@@ -57,50 +57,54 @@ interface SimpleImage {
     name: string;
   }
 export const useTools = () => {
-  const removeDomain = (url: string) => {
-    // console.log(url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', 'imgs'));
-    
-    return new URL(url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', 'imgs'))
+  const convertImageLink = (url: string, BLOCK_ID: string) => {
+    const parsedUrl = new URL(url);
+    const extractedPath = parsedUrl.pathname.split('/').slice(2).join(':')
+    const FILE_ID = encodeURIComponent('attachment:' + extractedPath)
+    return `https://www.notion.so/image/${FILE_ID}?table=block&id=${BLOCK_ID}&format=webp&width=1000`
   }
-    function convertNotionPagesToImageList(notionPages: NotionPage[]): SimpleImage[] {
-        
-        return notionPages.map((page: any) => {
-          const result: SimpleImage = {
-            id: page.id,
-            src: null,
-            alt: "",
-            name: ""
-          };
-          
-          const fileProperty = page.properties.file;
-          if (fileProperty && fileProperty.type === "files" && fileProperty.files.length > 0) {
-            const file = fileProperty.files[0];
-            
-            if (file.type === "file" && file.file && file.file.url) {
-              result.src = file.file.url;
-            } else if (file.type === "external" && file.external && file.external.url) {
+  const removeDomain = (url: string) => {
+    return url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '')
+  }
+  function convertNotionPagesToImageList(notionPages: NotionPage[]): SimpleImage[] {
+      return notionPages.map((page: any) => {
+        const result: SimpleImage = {
+          id: page.id,
+          src: null,
+          alt: "",
+          name: ""
+        };
 
-              result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
-            }
-            
-            if (file.name) {
-              result.name = file.name;
-              result.alt = file.name; // Use filename as alt text
-            }
+        const fileProperty = page.properties.file;
+        if (fileProperty && fileProperty.type === "files" && fileProperty.files.length > 0) {
+          const file = fileProperty.files[0];
+
+          if (file.type === "file" && file.file && file.file.url) {
+            // console.log(convertImageLink(file.file.url, page.id))
+            result.src = convertImageLink(file.file.url, page.id)
+          } else if (file.type === "external" && file.external && file.external.url) {
+
+            result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
           }
-          
-          const nameProperty = page.properties.Name;
-          if (nameProperty && nameProperty.type === "title" && nameProperty.title.length > 0) {
-            const titleText = nameProperty.title.map((t: { plain_text: string }) => t.plain_text).join("");
-            if (titleText) {
-              result.name = titleText;
-              result.alt = titleText;
-            }
+
+          if (file.name) {
+            result.name = file.name;
+            result.alt = file.name; // Use filename as alt text
           }
-          
-          return result;
-        });
-      }
+        }
+
+        const nameProperty = page.properties.Name;
+        if (nameProperty && nameProperty.type === "title" && nameProperty.title.length > 0) {
+          const titleText = nameProperty.title.map((t: { plain_text: string }) => t.plain_text).join("");
+          if (titleText) {
+            result.name = titleText;
+            result.alt = titleText;
+          }
+        }
+
+        return result;
+      });
+    }
 
       return {
         removeDomain,

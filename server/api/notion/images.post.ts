@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     const filter = body.query
 
     try {
-        const response = await $fetch('https://api.notion.com/v1/databases/' + body.db_id + '/query', {
+        return await $fetch('https://api.notion.com/v1/databases/' + body.db_id + '/query', {
             method: 'POST',
             headers: {
                 Authorization: "Bearer " + NOTION_SECRET_KEY,
@@ -17,8 +17,6 @@ export default defineEventHandler(async (event) => {
                 ...filter
             }
         })
-
-        return response
     }
     catch (error) {
         console.log(error);
