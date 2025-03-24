@@ -119,7 +119,7 @@ watch(isReady, (value) => {
           <NuxtImg :src="item.src" :class="[
             { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
             { 'hover:rounded-md': mode === MODES.FOCUS }]"
-            class="mouse-object image-item transition duration-300 h-full object-cover block" alt="img" loading="lazy"
+            class="mouse-object image-item transition duration-300 h-full block" alt="img" loading="lazy"
             format="webp" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" @load="imageIsReady" />
         </template>
       </StackGrid>
