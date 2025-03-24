@@ -18,7 +18,7 @@ useHead({
 });
 
 const { notionGetImages } = useNotion()
-const { convertNotionPagesToImageList } = useTools()
+const { convertNotionPagesToImageList, removeDomain } = useTools()
 const { data } = await notionGetImages()
 
 const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src) || [])
@@ -115,11 +115,14 @@ watch(isReady, (value) => {
       <StackGrid ref="stackGridRef" :items="images" :column-min-width="minWidth" :gutter-width="20" :gutter-height="20"
         class="gallery">
         <template #item="{ item }">
-          <NuxtImg :src="item.src" :class="[
-            { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
-            { 'hover:rounded-md': mode === MODES.FOCUS }]"
+          <NuxtImg
+            :src="item.src"
+            :class="[
+              { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
+              { 'hover:rounded-md': mode === MODES.FOCUS }]"
             class="mouse-object image-item transition duration-300 block" alt="img" loading="lazy"
-            format="webp" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" @load="imageIsReady" />
+            @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" @load="imageIsReady" />
+            <!-- <img :src="'https://prod-files-secure.s3.us-west-2.amazonaws.com/' + removeDomain(item.src)" > -->
         </template>
       </StackGrid>
     </div>

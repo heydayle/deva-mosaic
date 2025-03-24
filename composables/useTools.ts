@@ -57,6 +57,11 @@ interface SimpleImage {
     name: string;
   }
 export const useTools = () => {
+  const removeDomain = (url: string) => {
+    // console.log(url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', 'imgs'));
+    
+    return new URL(url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', 'imgs'))
+  }
     function convertNotionPagesToImageList(notionPages: NotionPage[]): SimpleImage[] {
         
         return notionPages.map((page: any) => {
@@ -74,7 +79,8 @@ export const useTools = () => {
             if (file.type === "file" && file.file && file.file.url) {
               result.src = file.file.url;
             } else if (file.type === "external" && file.external && file.external.url) {
-              result.src = file.external.url;
+
+              result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
             }
             
             if (file.name) {
@@ -97,6 +103,7 @@ export const useTools = () => {
       }
 
       return {
+        removeDomain,
         convertNotionPagesToImageList
       }
 }

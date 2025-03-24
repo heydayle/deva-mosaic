@@ -15,7 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
   ],
   routeRules: {
-    '/': { prerender: true }
+    // '/': { prerender: true }
   },
   colorMode: {
     preference: 'dark',
@@ -28,7 +28,11 @@ export default defineNuxtConfig({
     }
   },
   image: {
-    // domains: ['prod-files-secure.s3.us-west-2.amazonaws.com']
+    // provider: 'ipx',
+    // domains: ['prod-files-secure.s3.us-west-2.amazonaws.com'],
+    // alias: {
+    //   imgs: 'https://prod-files-secure.s3.us-west-2.amazonaws.com',
+    // },
   },
   vite: {
     server: {
