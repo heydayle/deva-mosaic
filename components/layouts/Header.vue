@@ -13,6 +13,7 @@ colorMode.value = 'dark'
           <UIcon :name="github.icon" size="22" class="text-xl"/>
         </UButton>
         <div class="fixed z-[99999] bottom-12 right-12 flex flex-col space-y-4">
+          <NBColorMode />
           <NBFocusMode />
         </div>
         <SelectLanguage />
