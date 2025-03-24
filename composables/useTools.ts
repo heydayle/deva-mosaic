@@ -55,24 +55,25 @@ interface SimpleImage {
     src: string | null;
     alt: string;
     name: string;
+    fileId: string;
   }
 export const useTools = () => {
-  const convertImageLink = (url: string, BLOCK_ID: string) => {
+  const convertFileIdEncodeURL = (url: string) => {
     const parsedUrl = new URL(url);
     const extractedPath = parsedUrl.pathname.split('/').slice(2).join(':')
-    const FILE_ID = encodeURIComponent('attachment:' + extractedPath)
-    return `https://www.notion.so/image/${FILE_ID}?table=block&id=${BLOCK_ID}&format=webp&width=1000`
+    return encodeURIComponent('attachment:' + extractedPath)
   }
-  const removeDomain = (url: string) => {
-    return url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '')
+  const getImageLink = (fileId: string, blockId: string, width: number = 500, format: string = 'webp'): string => {
+    return `https://www.notion.so/image/${fileId}?table=block&id=${blockId}&format=${format}&width=${width}`
   }
   function convertNotionPagesToImageList(notionPages: NotionPage[]): SimpleImage[] {
-      return notionPages.map((page: any) => {
+      return notionPages.map((page: NotionPage) => {
         const result: SimpleImage = {
           id: page.id,
           src: null,
           alt: "",
-          name: ""
+          name: "",
+          fileId: "",
         };
 
         const fileProperty = page.properties.file;
@@ -80,8 +81,9 @@ export const useTools = () => {
           const file = fileProperty.files[0];
 
           if (file.type === "file" && file.file && file.file.url) {
-            // console.log(convertImageLink(file.file.url, page.id))
-            result.src = convertImageLink(file.file.url, page.id)
+            const fileId = convertFileIdEncodeURL(file.file.url);
+            result.src = getImageLink(fileId, page.id, 1000)
+            result.fileId = fileId
           } else if (file.type === "external" && file.external && file.external.url) {
 
             result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
@@ -107,7 +109,7 @@ export const useTools = () => {
     }
 
       return {
-        removeDomain,
+        getImageLink,
         convertNotionPagesToImageList
       }
 }
