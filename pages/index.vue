@@ -73,7 +73,7 @@ const minWidth = ref(50)
 
 const setImageSize = () => {
   const containerWidth = document.querySelector('.container')?.clientWidth
-  const imageSize = containerWidth && Math.round(containerWidth / 5) || 200
+  const imageSize = containerWidth && Math.round(containerWidth / 5.5) || 200
   if (width.value < 500 && containerWidth)
     minWidth.value = width.value - (width.value - containerWidth)
   else minWidth.value = imageSize
@@ -81,7 +81,6 @@ const setImageSize = () => {
 
 onMounted(() => {
   setImageSize()
-  document.addEventListener('resize', setImageSize)
 })
 
 const refProcress = ref()
@@ -119,7 +118,7 @@ watch(isReady, (value) => {
           <NuxtImg :src="item.src" :class="[
             { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
             { 'hover:rounded-md': mode === MODES.FOCUS }]"
-            class="mouse-object image-item transition duration-300 h-full block" alt="img" loading="lazy"
+            class="mouse-object image-item transition duration-300 block" alt="img" loading="lazy"
             format="webp" @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" @load="imageIsReady" />
         </template>
       </StackGrid>
