@@ -12,13 +12,13 @@ export default defineAppConfig({
       image: '/cover.png',
       author: 'Thinh Le',
       publisher: 'Thinh Le',
-      canonical: 'https://github.com/heydayle/nuxt-boilerplate-v3'
+      canonical: 'https://github.com/heydayle/'
     },
     socials: [
       {
         name: 'Github',
         icon: 'simple-icons:github',
-        href: 'https://github.com/heydayle/nuxt-boilerplate-v3'
+        href: 'https://github.com/heydayle/'
       },
     ],
     headers: {
