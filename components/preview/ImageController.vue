@@ -13,21 +13,23 @@ const currentImageFocusing = computed(() => {
     const index = parseInt(route.query.index as string) as number
     if (route.query.index) {
         const currentImage = images.value[index]
-        return getImageLink(currentImage.fileId, currentImage.id, 3000)
+        return currentImage && getImageLink(currentImage.fileId, currentImage.id, 3000)
     }
     return ''
 })
 
-const isOpen = computed(() => !!route.query.index?.toString())
+const isOpen = computed(() => !!route.query.index?.toString() && !!currentImageFocusing.value)
 
 const onBack = () => {
-    const backIndex = currentIndex.value + 1
+    let backIndex = currentIndex.value - 1
+    if (backIndex < 0) backIndex = images.value.length - 1
     const backRoute = localRoute({ name: 'Home', query: { index: backIndex } })
     navigateTo(backRoute)
-    
+
 }
 const onNext = () => {
-    const nextIndex = currentIndex.value + 1
+    let nextIndex = currentIndex.value + 1
+    if (nextIndex > images.value.length - 1) nextIndex = 0
     const nextRoute = localRoute({ name: 'Home', query: { index: nextIndex } })
     navigateTo(nextRoute)
 }
@@ -37,18 +39,22 @@ const onNext = () => {
     <div>
         <UModal v-model="isOpen" fullscreen
             :ui="{ background: '!bg-transparent', overlay: { background: '!bg-gray-200/90 dark:!bg-gray-800/90' } }">
-            <div class="relative m-auto max-h-[calc(100vh-32px)] bg-transparent text-center">
-                <NuxtImg :src="currentImageFocusing" class="m-auto max-h-[calc(100vh-100px)] rounded-xl" />
-                <NuxtLinkLocale to="/"
-                    class="close-button absolute bottom-4 left-1/2 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1">
-                    <UIcon size="32" name="i-heroicons-x-mark-20-solid"
-                        class="close-button -my-1 text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black" />
-                </NuxtLinkLocale>
-                <div>
-                    <UButton class="absolute left-4 top-1/2" color="gray"
-                        icon="ic:outline-arrow-back-ios" :ui="{ rounded: 'rounded-full' }" @click="onBack" />
-                    <UButton class="absolute right-4 top-1/2" color="gray"
-                        icon="ic:outline-arrow-forward-ios" :ui="{ rounded: 'rounded-full' }" @click="onNext" />
+            <div class="grid grid-cols-[1fr,400px] my-auto">
+                <div class="relative">
+                    <div class="relative m-auto max-h-[calc(100vh-32px)] bg-transparent text-center">
+                        <NuxtImg :src="currentImageFocusing" class="m-auto max-h-[calc(100vh-100px)] rounded-xl" />
+                        <NuxtLinkLocale to="/"
+                            class="close-button absolute bottom-4 left-1/2 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1">
+                            <UIcon size="32" name="i-heroicons-x-mark-20-solid"
+                                class="close-button -my-1 text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black" />
+                        </NuxtLinkLocale>
+                    </div>
+                    <div>
+                        <UButton class="close-button absolute left-4 top-1/2" color="gray" icon="ic:outline-arrow-back-ios" size="xl"
+                            :ui="{ rounded: 'rounded-full' }" @click="onBack" />
+                        <UButton class="close-button absolute right-4 top-1/2" color="gray" icon="ic:outline-arrow-forward-ios" size="xl"
+                            :ui="{ rounded: 'rounded-full' }" @click="onNext" />
+                    </div>
                 </div>
             </div>
             <div
