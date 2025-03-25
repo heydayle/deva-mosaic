@@ -20,8 +20,8 @@ useHead({
 const { notionGetImages } = useNotion()
 const { convertNotionPagesToImageList } = useTools()
 const { data } = await notionGetImages()
+const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src).map((item, index) => ({ ...item, index: index })) || [])
 
-const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src) || [])
 
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
@@ -97,6 +97,7 @@ watch(isReady, (value) => {
     })
   }
 })
+
 </script>
 <template>
   <div>
@@ -121,7 +122,7 @@ watch(isReady, (value) => {
         class="gallery"
       >
         <template #item="{ item }">
-          <NuxtLinkLocale :to="`/img/${item.id}`">
+          <NuxtLinkLocale :to="{ path: '/', query: { fileId: item.fileId, blockId: item.id }}">
             <NuxtImg
               :src="item.src"
               :class="[
@@ -137,6 +138,7 @@ watch(isReady, (value) => {
           </NuxtLinkLocale>
         </template>
       </StackGrid>
+      <PreviewImageController />
     </div>
   </div>
 </template>

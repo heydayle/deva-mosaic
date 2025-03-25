@@ -7,7 +7,7 @@
           :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"
       >
       </div>
-      <div ref="refBackPoint" class="back-object" />
+      <div ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }" />
   </div>
   </template>
   
@@ -144,6 +144,7 @@
   
   // Reset the cursor size when the route changes
   const route = useRoute();
+  const isViewer = computed(() => route.query.fileId)
   watch(route, () => {
     gsap.killTweensOf(size);
     gsap.to(size, {duration: 0.1, value: startingSize});
