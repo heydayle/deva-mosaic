@@ -64,7 +64,7 @@
     document.addEventListener("mousemove", (event) => {
       mouseX.value = event.clientX;
       mouseY.value = event.clientY;
-      if (!event.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery"))
+      if (!event.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
         gsap.to(refBackPoint.value,{
           duration: 0.7,
           x: mouseX.value,
@@ -72,6 +72,12 @@
           width: size.value,
           height: size.value
         });
+
+        gsap.to(refCursor.value, {
+          opacity: 1,
+          duration: 0.5,
+        })
+      }
       if (!event.target?.classList || !event.target?.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
         currentActiveObject.value = null;
       }
@@ -97,6 +103,10 @@
           gsap.killTweensOf(size);
           gsap.to(size, { duration: 0.2, value: cursorSize  });
           if (className === 'mouse-object') {
+            gsap.to(refCursor.value, {
+              opacity: 0,
+              duration: 0.5,
+            })
             currentActiveObject.value = event.target;
             currentActiveObject.value.classList.add('mouse-active');
             gsap.fromTo(refBackPoint.value, {

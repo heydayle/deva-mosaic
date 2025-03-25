@@ -122,7 +122,7 @@ watch(isReady, (value) => {
         class="gallery"
       >
         <template #item="{ item }">
-          <NuxtLinkLocale :to="{ path: '/', query: { fileId: item.fileId, blockId: item.id }}">
+          <NuxtLinkLocale :to="{ path: '/', query: { index: item.index }}">
             <NuxtImg
               :src="item.src"
               :class="[
