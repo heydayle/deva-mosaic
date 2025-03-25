@@ -11,27 +11,29 @@ const { convertNotionPagesToImageList } = useTools()
 const { data } = await notionGetImages()
 
 const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src) || [])
-
 </script>
 <template>
     <div>
-        <UModal v-model="isOpen" fullscreen :ui="{ background: '!bg-transparent' }">
-            <NuxtLinkLocale to="/">
-                <UIcon color="gray" variant="ghost" name="i-heroicons-x-mark-20-solid" class="-my-1"/>
-            </NuxtLinkLocale>
-            <div class="max-h-[calc(100vh-100px)] bg-transparent">
-                <NuxtImg :src="currentImageFocusing" class="m-auto max-h-[calc(100vh-100px)]" />
+        <UModal v-model="isOpen" fullscreen :ui="{ background: '!bg-transparent', overlay: { background: '!bg-gray-200/90 dark:!bg-gray-800/90' } }">
+            <div class="relative m-auto max-h-[calc(100vh-32px)] bg-transparent text-center">
+                <NuxtImg :src="currentImageFocusing" class="m-auto max-h-[calc(100vh-100px)] rounded-xl" />
+                <NuxtLinkLocale to="/" class="close-button absolute bottom-4 left-1/2 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1">
+                    <UIcon size="32" name="i-heroicons-x-mark-20-solid" class="close-button -my-1 text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black"/>
+                </NuxtLinkLocale>
             </div>
-            <div class="flex space-x-4 max-w-[calc(100vw-80px)] m-auto overflow-x-auto">
-                <div v-for="(item, index) in images" :key="index" class="w-[120px]">
-                    <NuxtLinkLocale :to="{ path: '/', query: { fileId: item.fileId, blockId: item.id }}" class="block">
-                        <NuxtImg
-                            :src="item.src"
-                            class="mouse-object image-item transition duration-300 w-[120px] block"
-                            alt="img"
-                            loading="lazy"
-                        />
-                    </NuxtLinkLocale>
+            <div class="fixed right-0 top-0 m-auto p-4 max-w-[600px] h-screen overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80">
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <div v-for="(item, index) in images" :key="index" class="w-[200px]">
+                        <NuxtLinkLocale :to="{ path: '/', query: { fileId: item.fileId, blockId: item.id }}" class="w-[200px] block">
+                            <NuxtImg
+                                :src="item.src"
+                                class="mouse-object image-item transition duration-300 block duration-600"
+                                :class="{ 'filter saturate-[0]': route.query.fileId === item.fileId }"
+                                alt="img"
+                                loading="lazy"
+                            />
+                        </NuxtLinkLocale>
+                    </div>
                 </div>
             </div>
         </UModal>

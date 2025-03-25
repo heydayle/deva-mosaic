@@ -19,6 +19,7 @@
   const refCursor = ref()
   const currentActiveObject = ref()
   const refBackPoint = ref()
+  const colorMode = useColorMode()
 
   const {x, y} = useMouse({
     type: 'client'
@@ -106,8 +107,8 @@
               y: rect.y  - 20,
               width: rect.width + 40,
               height: rect.height + 40,
-              borderWidth: 4,
-              borderColor: 'white',
+              borderWidth: isViewer.value ? 2 : 4,
+              borderColor: colorMode.value === 'dark' ? 'white' : 'black',
               borderStyle: 'dashed',
               duration: 0.7,
             })
@@ -140,6 +141,7 @@
     setupMouseEffect('mouse-md', 100);
     setupMouseEffect('mouse-sm', 60);
     setupMouseEffect('mouse-object', 20);
+    setupMouseEffect('close-button', 60);
   });
   
   // Reset the cursor size when the route changes
