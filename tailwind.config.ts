@@ -1,3 +1,5 @@
+import { plugin } from "postcss";
+
 export default {
     content: [
         './assets/**/*.{vue,js,css}',
@@ -26,4 +28,7 @@ export default {
             },
         },
     },
+    plugins: [
+        require('@tailwindcss/aspect-ratio'),
+    ]
 }

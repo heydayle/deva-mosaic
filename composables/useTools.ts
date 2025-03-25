@@ -56,6 +56,8 @@ interface SimpleImage {
     alt: string;
     name: string;
     fileId: string;
+    preview: string
+    srcLoading: string
   }
 export const useTools = () => {
   const convertFileIdEncodeURL = (url: string) => {
@@ -70,10 +72,12 @@ export const useTools = () => {
       return notionPages.map((page: NotionPage) => {
         const result: SimpleImage = {
           id: page.id,
-          src: null,
+          src: "",
           alt: "",
           name: "",
           fileId: "",
+          preview: "",
+          srcLoading: ""
         };
 
         const fileProperty = page.properties.file;
@@ -82,7 +86,9 @@ export const useTools = () => {
 
           if (file.type === "file" && file.file && file.file.url) {
             const fileId = convertFileIdEncodeURL(file.file.url);
+            result.srcLoading = getImageLink(fileId, page.id, 1)
             result.src = getImageLink(fileId, page.id, 1000)
+            result.preview = getImageLink(fileId, page.id, 8000)
             result.fileId = fileId
           } else if (file.type === "external" && file.external && file.external.url) {
 

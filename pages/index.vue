@@ -83,15 +83,15 @@ onMounted(() => {
   setImageSize()
 })
 
-const refProcress = ref()
+const refProcess = ref()
 watch(isReady, (value) => {
   if (value) {
     setOverflow()
-    gsap.to(refProcress.value, {
+    gsap.to(refProcess.value, {
       opacity: 0,
       duration: 0.7
     })
-    gsap.to(refProcress.value, {
+    gsap.to(refProcess.value, {
       display: 'none',
       delay: 1,
     })
@@ -101,7 +101,7 @@ watch(isReady, (value) => {
 </script>
 <template>
   <div>
-    <div ref="refProcress" class="fixed top-0 left-0 z-[999] w-screen h-screen flex items-center px-20">
+    <div ref="refProcess" class="fixed top-0 left-0 z-[999] w-screen h-screen flex items-center px-20">
       <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
         <template #indicator="{ percent }">
           <div class="text-center w-full">
