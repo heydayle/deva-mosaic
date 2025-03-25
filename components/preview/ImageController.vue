@@ -20,18 +20,33 @@ const currentImageFocusing = computed(() => {
 
 const isOpen = computed(() => !!route.query.index?.toString() && !!currentImageFocusing.value)
 
+const scrollToImage = (index: number) => {
+    document.querySelector(`#index-${index}`)?.scrollIntoView({ behavior: 'smooth', block: "center" })
+}
 const onBack = () => {
     let backIndex = currentIndex.value - 1
     if (backIndex < 0) backIndex = images.value.length - 1
     const backRoute = localRoute({ name: 'Home', query: { index: backIndex } })
     navigateTo(backRoute)
-
+    scrollToImage(backIndex)
 }
 const onNext = () => {
     let nextIndex = currentIndex.value + 1
     if (nextIndex > images.value.length - 1) nextIndex = 0
     const nextRoute = localRoute({ name: 'Home', query: { index: nextIndex } })
     navigateTo(nextRoute)
+    scrollToImage(nextIndex)
+}
+
+const count = ref(0)
+
+const imageIsReady = () => {
+  if (count.value < images.value.length) {
+    count.value++
+  } 
+  else {
+    scrollToImage(currentIndex.value)
+  }
 }
 
 </script>
@@ -62,10 +77,15 @@ const onNext = () => {
                 <div class="flex flex-col items-center space-y-4 w-full">
                     <div v-for="(item, index) in images" :key="index" class="w-[200px]">
                         <NuxtLinkLocale :to="{ path: '/', query: { index } }" class="w-[200px] block">
-                            <NuxtImg :src="item.src"
+                            <NuxtImg
+                                :src="item.src"
+                                :id="'index-' + index"
                                 class="mouse-object image-item transition duration-300 block duration-600"
                                 :class="{ 'filter saturate-[0]': parseInt(route.query.index as string) === index }"
-                                alt="img" loading="lazy" />
+                                alt="img"
+                                loading="lazy"
+                                @load="imageIsReady"
+                            />
                         </NuxtLinkLocale>
                     </div>
                 </div>
