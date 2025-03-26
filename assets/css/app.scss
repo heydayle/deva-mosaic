@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-    cursor: none;
+    cursor: none !important;
 }
 .container {
     max-width: 1336px;

@@ -128,7 +128,7 @@ watch(isReady, (value) => {
               :class="[
                 { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
                 { 'hover:rounded-md': mode === MODES.FOCUS }]"
-              class="mouse-object image-item transition duration-300 block"
+              class="mouse-object image-item transition duration-300 block cursor-none"
               alt="img"
               loading="lazy"
               @mouseenter="itemHover = item.id"

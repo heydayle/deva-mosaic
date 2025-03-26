@@ -1,26 +1,44 @@
 <template>
   <div class="h-full">
       <div
+          id="cursor-main"
           ref="refCursor"
           :class="cursorClasses"
-          class="bg-white"
+          class="bg-white p-4"
           :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"
-      />
+      >
+        <UIcon
+          v-if="isBackHover"
+          name="ic:outline-arrow-back-ios"
+          :size="width < 768 ? 16 : 24"
+          class="close-button text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black m-auto"
+        />
+        <UIcon
+          v-if="isNextHover"
+          name="ic:outline-arrow-forward-ios"
+          :size="width < 768 ? 16 : 24"
+          class="close-button text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black"
+        />
+      </div>
       <div ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }" />
   </div>
   </template>
   
   <script setup>
   
-  import {useMouse, watchOnce} from "@vueuse/core";
-  import {gsap} from "gsap";
+  import { useMouse, watchOnce, useWindowSize } from "@vueuse/core";
+  import { gsap } from "gsap";
 
   const refCursor = ref()
   const currentActiveObject = ref()
   const refBackPoint = ref()
   const colorMode = useColorMode()
+  const { width } = useWindowSize()
 
-  const {x, y} = useMouse({
+  const isNextHover = ref(false)
+  const isBackHover = ref(false)
+
+  const { x, y } = useMouse({
     type: 'client'
   });
   
@@ -52,17 +70,49 @@
   const mouseX = ref(0);
   const mouseY = ref(0);
   
+  // Check next/back button on preview controller
+  const handleHoverControlButton = (target, isOut) => {
+    if (!target) return;
+    if (target.classList.contains('next-button')) {
+      isNextHover.value = true
+      isBackHover.value = false
+    }
+    else if (target.classList.contains('back-button')) {
+      isNextHover.value = false
+      isBackHover.value = true
+    }
+    if (isOut) {
+      isNextHover.value = false
+      isBackHover.value = false
+    }
+  }
+  
   /**
    * Respond to any DOM element with the class of ".mouse-*" by increasing the size of the cursor
    * @param className - The name of the CSS class that we're looking for to make the change
    * @param cursorSize - The size of the cursor when the element is hovered
    */
   const setupMouseEffect = (className, cursorSize) => {
-
+    
+    const btns = document.querySelectorAll(".close-button")
+    btns.forEach(el => {
+      el.addEventListener('click', e => {
+        const isController = e.target.classList.contains("next-button") || e.target.classList.contains("back-button")
+        
+        if (isController && size < 60) {
+          gsap.set(size, { duration: 0.2, value: 60 });
+        }
+      })
+    })
     // Update the cursor position when the mouse moves
     document.addEventListener("mousemove", (event) => {
       mouseX.value = event.clientX;
       mouseY.value = event.clientY;
+      handleHoverControlButton(event.target)
+      const isController = event?.target.classList.contains("next-button") || event?.target.classList.contains("back-button")
+      if (isController) {
+        gsap.to(size, { duration: 0.2, value: 60 });
+      }
       if (!event.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
         gsap.to(refBackPoint.value,{
           duration: 0.7,
@@ -94,12 +144,20 @@
         })
       }
     });
+
     // Increase the size of the cursor when the user hovers over an element
     document.body.addEventListener('mouseover', (event) => {
         if (event.target.classList.contains(className)) {
           const rect = event.target.getBoundingClientRect();
           gsap.killTweensOf(size);
           gsap.to(size, { duration: 0.2, value: cursorSize  });
+          
+          if (className === 'close-button') {
+            gsap.to(refBackPoint.value, {
+              opacity: 0,
+              duration: 0.5,
+            })
+          }
           if (className === 'mouse-object') {
             gsap.to(refCursor.value, {
               opacity: 0,
@@ -108,6 +166,7 @@
             currentActiveObject.value = event.target;
             currentActiveObject.value.classList.add('mouse-active');
             gsap.fromTo(refBackPoint.value, {
+              opacity:1,
               position: 'fixed',
               background: 'transparent',
             }, {
@@ -137,9 +196,16 @@
         }
     });
     document.body.addEventListener('mouseout', (event) => {
-      if (event.target.classList.contains(className)) {
+      handleHoverControlButton(event?.target, true)
+      if (event?.target.classList.contains(className)) {
         gsap.killTweensOf(size);
         gsap.to(size, { duration: 0.2, value: startingSize });
+        if (className === 'close-button') {
+          gsap.to(refBackPoint.value, {
+              opacity: 1,
+              duration: 0.5,
+            })
+        }
       }
     });
   };
