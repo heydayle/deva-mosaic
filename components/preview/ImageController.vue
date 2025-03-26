@@ -89,7 +89,7 @@ const imageIsReady = () => {
               v-if="!isCurrentLoaded"
               ref="refImageAnimate"
               :src="currentImageFocusing.srcLoading"
-              class="absolute inset-0 m-auto max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)] rounded-xl"
+              class="absolute inset-0 m-auto w-full md:w-unset max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)] rounded-xl"
             />
             <NuxtImg
               v-show="isCurrentLoaded"
