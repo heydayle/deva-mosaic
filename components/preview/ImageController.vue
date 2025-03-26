@@ -99,7 +99,7 @@ const imageIsReady = () => {
           <div>
             <NuxtLinkLocale
               to="/"
-              class="close-button absolute top-4 right-4 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1"
+              class="close-button absolute top-4 right-4 z-10 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1"
             >
               <UIcon
                 size="32"
@@ -140,7 +140,7 @@ const imageIsReady = () => {
         class="fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 max-w-[600px] h-[120px] md:!h-screen overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
       >
         <div
-          class="flex md:flex-col items-center space-x-4 md:space-y-4 w-full"
+          class="flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
         >
           <div v-for="(item, index) in images" :key="index" class="xs:w-[50px] md:w-[200px]">
             <NuxtLinkLocale
