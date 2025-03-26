@@ -76,8 +76,8 @@ const imageIsReady = () => {
       :ui="{
         background: '!bg-transparent',
         overlay: { background: '!bg-gray-200/90 dark:!bg-gray-800/90' },
-        fullscreen: 'w-screen !h-[calc(100vh-100px)]',
-        container: 'flex min-h-[calc(100vh-90px)] items-end sm:items-center justify-center text-center'
+        fullscreen: 'w-screen !h-[calc(100vh-100px)] md:h-screen',
+        container: 'flex min-h-[calc(100vh-90px)] md:min-h-full items-end sm:items-center justify-center text-center'
       }"
     >
       <div v-if="currentImageFocusing" class="grid xs:grid-cols-1 md:grid-cols-[1fr,400px] my-auto p-2 md:p-0">
@@ -89,7 +89,7 @@ const imageIsReady = () => {
               v-if="!isCurrentLoaded"
               ref="refImageAnimate"
               :src="currentImageFocusing.srcLoading"
-              class="absolute inset-0 m-auto w-full md:w-unset max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)] rounded-xl"
+              class="absolute inset-0 m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
             />
             <NuxtImg
               v-show="isCurrentLoaded"
