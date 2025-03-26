@@ -93,6 +93,15 @@
    * @param cursorSize - The size of the cursor when the element is hovered
    */
   const setupMouseEffect = (className, cursorSize) => {
+    document.addEventListener('click', e => {
+      const isImage = e.target.classList.contains("image-item")
+      if (isImage) {
+        gsap.to(refBackPoint.value,{
+          opacity: 0,
+          duration: 0.3
+        });
+      }
+    })
     
     const btns = document.querySelectorAll(".close-button")
     btns.forEach(el => {

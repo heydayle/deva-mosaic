@@ -22,7 +22,7 @@ const { convertNotionPagesToImageList } = useTools()
 const { data } = await notionGetImages()
 const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src).map((item, index) => ({ ...item, index: index })) || [])
 
-
+const route = useRoute()
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
 
@@ -96,6 +96,9 @@ watch(isReady, (value) => {
       delay: 1,
     })
   }
+})
+watch(() => route.query.index, (value) => {
+  setOverflow(!!value?.toString())
 })
 
 </script>

@@ -69,65 +69,65 @@ const imageIsReady = () => {
 };
 </script>
 <template>
-  <div>
+  <div class="!h-[calc(100vh-200px)]">
     <UModal
       v-model="isOpen"
       fullscreen
       :ui="{
         background: '!bg-transparent',
         overlay: { background: '!bg-gray-200/90 dark:!bg-gray-800/90' },
+        fullscreen: 'w-screen !h-[calc(100vh-100px)]',
+        container: 'flex min-h-[calc(100vh-90px)] items-end sm:items-center justify-center text-center'
       }"
     >
       <div v-if="currentImageFocusing" class="grid xs:grid-cols-1 md:grid-cols-[1fr,400px] my-auto p-2 md:p-0">
         <div class="relative w-full">
           <div
-            class="relative mt-20 md:mt-auto m-auto h-[calc(100vh-120px)] bg-transparent text-center"
+            class="relative m-auto md:!h-[calc(100vh-130px)] bg-transparent text-center"
           >
             <NuxtImg
               v-if="!isCurrentLoaded"
               ref="refImageAnimate"
               :src="currentImageFocusing.srcLoading"
-              class="absolute inset-0 m-auto max-h-[calc(100vh-120px)] rounded-xl"
+              class="absolute inset-0 m-auto max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)] rounded-xl"
             />
             <NuxtImg
               v-show="isCurrentLoaded"
               :src="currentImageFocusing.preview"
-              class="m-auto rounded-xl max-h-[calc(100vh-120px)]"
+              class="m-auto rounded-xl max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)]"
               @load="currentImageLoaded"
             />
           </div>
           <div class="cursor-none">
-            <NuxtLinkLocale
+             <NuxtLinkLocale
               to="/"
-              class="close-button absolute top-4 right-4 z-10 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1"
+              class="close-button fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1"
             >
               <UIcon
                 size="32"
                 name="i-heroicons-x-mark-20-solid"
                 class="close-button text-white-50 -mb-1 transition duration-300 group-hover:bg-white group-hover:text-black"
               />
-            </NuxtLinkLocale>
+            </NuxtLinkLocale> 
             <UButton
-              class="close-button back-button h-[calc(100vh-100px)] absolute left-0 top-0 md:p-4 w-1/2 cursor-none"
+              class="close-button back-button h-[calc(100vh-330px)] md:!h-[calc(100vh-100px)] absolute left-0 top-0 md:p-4 w-1/2 cursor-none"
               color="gray"
               :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent' }"
               :size="width < 768 ? 'xs' : 'xl'"
               @click="onBack"
-            >
-            </UButton>
+            />
             <UButton
-              class="close-button next-button h-[calc(100vh-100px)] absolute right-0 top-0 md:p-4 w-1/2 cursor-none"
+              class="close-button next-button h-[calc(100vh-330px)] md:!h-[calc(100vh-100px)] absolute right-0 top-0 md:p-4 w-1/2 cursor-none"
               color="gray"
               :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent' }"
               :size="width < 768 ? 'xs' : 'xl'"
               @click="onNext"
-            >
-            </UButton>
+            />
           </div>
         </div>
-      </div>
-      <div
-        class="fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 max-w-[600px] h-[120px] md:!h-screen overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
+      </div> 
+     <div
+        class="fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[300px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
       >
         <div
           class="flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
@@ -143,13 +143,12 @@ const imageIsReady = () => {
                 :class="{ 'filter saturate-[0]': parseInt(route.query.index as string) === index }"
                 class="mouse-object image-item transition duration-300 block duration-600"
                 alt="img"
-                loading="lazy"
                 @load="imageIsReady"
               />
             </NuxtLinkLocale>
           </div>
         </div>
-      </div>
+      </div> 
     </UModal>
   </div>
 </template>
