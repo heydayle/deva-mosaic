@@ -76,8 +76,8 @@ const imageIsReady = () => {
       :ui="{
         background: '!bg-transparent',
         overlay: { background: '!bg-gray-200/90 dark:!bg-gray-800/90' },
-        fullscreen: 'w-screen !h-[calc(100vh-100px)] md:h-screen',
-        container: 'flex min-h-[calc(100vh-90px)] md:min-h-full items-end sm:items-center justify-center text-center'
+        fullscreen: 'w-screen !h-[calc(100vh-100px)] md:!h-screen',
+        container: 'flex min-h-[calc(100vh-90px)] md:!min-h-full items-end sm:items-center justify-center text-center'
       }"
     >
       <div v-if="currentImageFocusing" class="grid xs:grid-cols-1 md:grid-cols-[1fr,400px] my-auto p-2 md:p-0">
@@ -127,7 +127,7 @@ const imageIsReady = () => {
         </div>
       </div> 
      <div
-        class="fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[300px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
+        class="fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[260px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
       >
         <div
           class="flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
