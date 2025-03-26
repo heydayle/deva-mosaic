@@ -51,11 +51,11 @@ interface NotionPage {
 }
 
 interface SimpleImage {
-    id: string;
-    src: string | null;
-    alt: string;
-    name: string;
-    fileId: string;
+    id: string
+    src: string
+    alt: string
+    name: string
+    fileId: string
     preview: string
     srcLoading: string
   }
