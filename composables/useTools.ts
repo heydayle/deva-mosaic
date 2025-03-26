@@ -87,7 +87,7 @@ export const useTools = () => {
           if (file.type === "file" && file.file && file.file.url) {
             const fileId = convertFileIdEncodeURL(file.file.url);
             result.srcLoading = getImageLink(fileId, page.id, 1)
-            result.src = getImageLink(fileId, page.id, 1000)
+            result.src = getImageLink(fileId, page.id, 600)
             result.preview = getImageLink(fileId, page.id, 8000)
             result.fileId = fileId
           } else if (file.type === "external" && file.external && file.external.url) {
