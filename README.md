@@ -4,10 +4,10 @@ A curated collection of all the amazing moments captured through my lens 🚀
 
 ## Features
 
-- 🚀 **Gallery View** - Showcase a photo grid with high quality and optimized performance for seamless browsing.
-- 📱 **Preview View** - Display photos in high quality with a user-friendly, responsive preview.
-- 📐 **Theme Customization** - Toggle between Dark and Light modes for personalized viewing.
-- 🎨 **Focus Mode** - Highlight a single photo for a more immersive and focused gallery experience.
+- 🪩 **Gallery View** - Showcase a photo grid with high quality and optimized performance for seamless browsing.
+- 🖼 **Preview Mode** - Display photos in high quality with a user-friendly, responsive preview.
+- 🎯 **Focus Mode** - Highlight a single photo for a more immersive and focused gallery experience.
+- ☄️ **Theme Customization** - Toggle between Dark and Light modes for personalized viewing.
 
 ### Contribution Guidelines
 
