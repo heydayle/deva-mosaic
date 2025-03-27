@@ -145,20 +145,7 @@
     });
     // Update the cursor position when the user scrolls mini gallery
     if (isViewer.value) {
-      const miniGallery = document.querySelector('.mini-gallery')
-      miniGallery.addEventListener('scroll', () => {
-        const hoveredElement = document.elementFromPoint(mouseX.value, mouseY.value);
-        if (hoveredElement && hoveredElement.classList.contains("mouse-object")) {
-          const rect = hoveredElement.getBoundingClientRect();
-          gsap.to(refBackPoint.value, {
-            x: rect.x - 15,
-            y: rect.y  - 15,
-            width: rect.width + 30,
-            height: rect.height + 30,
-            duration: 0.6,
-          })
-        }
-      })
+      
     }
 
     // Update the cursor position when the user scrolls
@@ -259,6 +246,42 @@
     flush: 'post',
     deep: true
   });
+
+  const refMiniGallery = ref()
+  
+  let intervalCheckMinigalleryInit
+
+  const setMouseForMiniGallery = (miniGallery) => {
+    miniGallery.addEventListener('scroll', () => {
+        const hoveredElement = document.elementFromPoint(mouseX.value, mouseY.value);
+        if (hoveredElement && hoveredElement.classList.contains("mouse-object")) {
+          const rect = hoveredElement.getBoundingClientRect();
+          gsap.to(refBackPoint.value, {
+            x: rect.x - 15,
+            y: rect.y  - 15,
+            width: rect.width + 30,
+            height: rect.height + 30,
+            duration: 0.6,
+          })
+        }
+      })
+  }
+
+  watch(isViewer, (value) => {
+    if (value) {
+      intervalCheckMinigalleryInit = setInterval(() => {
+        refMiniGallery.value = document.querySelector('#mini-gallery')
+      }, 1000)
+    } else {
+      clearInterval(intervalCheckMinigalleryInit)
+    }
+  })
+  watch(refMiniGallery, (value) => {
+    if (value) {
+      clearInterval(intervalCheckMinigalleryInit)
+      setMouseForMiniGallery(value)
+    }
+  })
   
   </script>
   

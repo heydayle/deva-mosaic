@@ -75,7 +75,7 @@ const imageIsReady = () => {
       fullscreen
       :ui="{
         background: '!bg-transparent',
-        overlay: { background: '!bg-gray-200/80 dark:!bg-gray-800/60 backdrop-blur-xl' },
+        overlay: { background: '!bg-gray-200/80 dark:!bg-gray-800/90 backdrop-blur-xl' },
         fullscreen: 'w-screen !h-[calc(100vh-100px)] md:!h-screen',
         container: 'flex min-h-[calc(100vh-90px)] md:!min-h-full items-end sm:items-center justify-center text-center'
       }"
@@ -132,6 +132,7 @@ const imageIsReady = () => {
         </div>
       </div> 
      <div
+        id="mini-gallery"
         class="mini-gallery fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[260px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
       >
         <div
