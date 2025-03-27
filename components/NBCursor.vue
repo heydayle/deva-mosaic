@@ -96,7 +96,7 @@
     document.addEventListener('click', e => {
       const isMiniGallery = !!e.target.parentElement.parentElement.parentElement.classList.contains("mini-gallery")
       const isImage = e.target.classList.contains("image-item")
-      
+
       if (isImage && !isMiniGallery) {
         gsap.to(refBackPoint.value,{
           opacity: 0,
@@ -143,6 +143,22 @@
         currentActiveObject.value = null;
       }
     });
+    // Update the cursor position when the user scrolls mini gallery
+    const miniGallery = document.querySelector('.mini-gallery')
+    miniGallery.addEventListener('scroll', () => {
+      const hoveredElement = document.elementFromPoint(mouseX.value, mouseY.value);
+      if (hoveredElement && hoveredElement.classList.contains("mouse-object")) {
+        const rect = hoveredElement.getBoundingClientRect();
+        gsap.to(refBackPoint.value, {
+          x: rect.x - 15,
+          y: rect.y  - 15,
+          width: rect.width + 30,
+          height: rect.height + 30,
+          duration: 0.6,
+        })
+      }
+    })
+
     // Update the cursor position when the user scrolls
     document.addEventListener('scroll', () => {
       const hoveredElement = document.elementFromPoint(mouseX.value, mouseY.value);
@@ -241,7 +257,6 @@
     flush: 'post',
     deep: true
   });
-  
   
   </script>
   
