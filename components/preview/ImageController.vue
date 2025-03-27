@@ -75,12 +75,12 @@ const imageIsReady = () => {
       fullscreen
       :ui="{
         background: '!bg-transparent',
-        overlay: { background: '!bg-gray-200/90 dark:!bg-gray-800/90' },
+        overlay: { background: '!bg-gray-200/80 dark:!bg-gray-800/60 backdrop-blur-xl' },
         fullscreen: 'w-screen !h-[calc(100vh-100px)] md:!h-screen',
         container: 'flex min-h-[calc(100vh-90px)] md:!min-h-full items-end sm:items-center justify-center text-center'
       }"
     >
-      <div v-if="currentImageFocusing" class="grid xs:grid-cols-1 md:grid-cols-[1fr,400px] my-auto p-2 md:p-0">
+      <div v-if="currentImageFocusing" class="grid xs:grid-cols-1 md:grid-cols-[1fr,280px] my-auto p-2 md:p-0">
         <div class="relative w-full">
           <div
             class="relative m-auto md:!h-[calc(100vh-130px)] bg-transparent text-center"
@@ -112,13 +112,15 @@ const imageIsReady = () => {
             <UButton
               class="close-button back-button h-[calc(100vh-330px)] md:!h-[calc(100vh-100px)] absolute left-0 top-0 md:p-4 w-1/2 cursor-none"
               color="gray"
-              :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent' }"
+              variant="ghost"
+              :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent !shadow-none' }"
               :size="width < 768 ? 'xs' : 'xl'"
               @click="onBack"
             />
             <UButton
               class="close-button next-button h-[calc(100vh-330px)] md:!h-[calc(100vh-100px)] absolute right-0 top-0 md:p-4 w-1/2 cursor-none"
               color="gray"
+              variant="ghost"
               :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent' }"
               :size="width < 768 ? 'xs' : 'xl'"
               @click="onNext"
