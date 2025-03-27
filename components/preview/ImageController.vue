@@ -89,7 +89,7 @@ const imageIsReady = () => {
               v-if="!isCurrentLoaded"
               ref="refImageAnimate"
               :src="currentImageFocusing.srcLoading"
-              class="absolute inset-0 m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
+              class="m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
             />
             <NuxtImg
               v-show="isCurrentLoaded"
@@ -113,7 +113,7 @@ const imageIsReady = () => {
               <NBColorMode />
             </div>
             <UButton
-              class="close-button back-button h-[calc(100vh-330px)] md:!h-[calc(100vh-100px)] absolute left-0 top-0 md:p-4 w-1/2 cursor-none"
+              class="close-button back-button h-[calc(100vh-250px)] md:!h-[calc(100vh-100px)] absolute left-0 top-0 md:p-4 w-1/2 cursor-none"
               color="gray"
               variant="ghost"
               :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent !shadow-none' }"
@@ -121,7 +121,7 @@ const imageIsReady = () => {
               @click="onBack"
             />
             <UButton
-              class="close-button next-button h-[calc(100vh-330px)] md:!h-[calc(100vh-100px)] absolute right-0 top-0 md:p-4 w-1/2 cursor-none"
+              class="close-button next-button h-[calc(100vh-250px)] md:!h-[calc(100vh-100px)] absolute right-0 top-0 md:p-4 w-1/2 cursor-none"
               color="gray"
               variant="ghost"
               :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent' }"
