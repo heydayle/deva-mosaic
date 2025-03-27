@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { gsap } from "gsap";
-import { useWindowSize } from "@vueuse/core"
+import { useWindowSize, useScroll } from "@vueuse/core"
+import { UseDocumentVisibility } from "@vueuse/components"
+import { useTemplateRef } from 'vue'
 
 const route = useRoute();
-const localRoute = useLocaleRoute();
 const { width } = useWindowSize()
+const colorMode = useColorMode()
 
 const { notionGetImages } = useNotion();
 const { convertNotionPagesToImageList } = useTools();
@@ -18,13 +20,25 @@ const images = computed(
     ) || []
 );
 const currentIndex = computed(() => Number.parseInt(route.query.index));
+
+const { scrollToImage, onBack, onNext } = useControl(images.value);
+defineShortcuts({
+  'arrowright': () => onNext(currentIndex.value),
+  'arrowdown': () => onNext(currentIndex.value),
+  'arrowleft': () => onBack(currentIndex.value),
+  'arrowup': () => onBack(currentIndex.value),
+})
+
 const currentImageFocusing = computed(() => {
   const index = Number.parseInt(route.query.index as string) as number;
   return images.value[index];
 });
 
-watch(currentIndex, () => {
+watch(currentIndex, (value) => {
   isCurrentLoaded.value = false;
+  if (value.toString()) {
+    setBoundingSelectedObject()
+  }
 });
 
 const isOpen = computed(
@@ -38,35 +52,41 @@ const currentImageLoaded = () => {
     opacity: 0,
   });
 };
-const scrollToImage = (index: number) => {
-  document
-    .querySelector(`#index-${index}`)
-    ?.scrollIntoView({ behavior: "smooth", block: "center" });
-};
-const onBack = () => {
-  let backIndex = currentIndex.value - 1;
-  if (backIndex < 0) backIndex = images.value.length - 1;
-  const backRoute = localRoute({ name: "Home", query: { index: backIndex } });
-  navigateTo(backRoute);
-  scrollToImage(backIndex);
-};
-const onNext = () => {
-  let nextIndex = currentIndex.value + 1;
-  if (nextIndex > images.value.length - 1) nextIndex = 0;
-  const nextRoute = localRoute({ name: "Home", query: { index: nextIndex } });
-  navigateTo(nextRoute);
-  scrollToImage(nextIndex);
-};
 
-const count = ref(0);
-
-const imageIsReady = () => {
-  if (count.value < images.value.length) {
-    count.value++;
-  } else {
+const imageIsReady = (visibility: string) => {
+  if (visibility === "visible") {
     scrollToImage(currentIndex.value);
   }
 };
+const refSelectPoint = useTemplateRef('refSelectPoint')
+const refMiniGallery = useTemplateRef('refMiniGallery')
+const { y } = useScroll(refMiniGallery, { behavior: 'smooth' })
+
+const setBoundingSelectedObject = () => {
+  const index = Number.parseInt(route.query.index as string) as number;
+  const element = document.querySelector('#index-' + index);
+  if (!element) return
+  const rect = element.getBoundingClientRect();
+  gsap.to(element, {
+    position: 'relative',
+    zIndex: 999,
+  })
+  gsap.to(refSelectPoint.value, {
+    x: rect.x - 10,
+    y: rect.y - 10,
+    width: rect.width + 20,
+    height: rect.height + 20,
+    borderWidth: isOpen.value ? 2 : 4,
+    borderColor: colorMode.value === 'dark' ? 'white' : 'black',
+    borderStyle: 'dashed',
+    duration: 0.7,
+  })
+}
+watch(y, () => {
+  if (isOpen.value) {
+    setBoundingSelectedObject()
+  }
+})
 </script>
 <template>
   <div class="!h-[calc(100vh-200px)]">
@@ -80,6 +100,9 @@ const imageIsReady = () => {
         container: 'flex min-h-[calc(100vh-90px)] md:!min-h-full items-end sm:items-center justify-center text-center'
       }"
     >
+      <Teleport to="#select-cursor">
+        <div ref="refSelectPoint" class="selected-object fixed bg-transparent opacity-100" :class="{ 'z-[9999]': isOpen }" />
+      </Teleport>
       <div v-if="currentImageFocusing" class="grid xs:grid-cols-1 md:grid-cols-[1fr,280px] my-auto p-2 md:p-0">
         <div class="relative w-full">
           <div
@@ -118,7 +141,7 @@ const imageIsReady = () => {
               variant="ghost"
               :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent !shadow-none' }"
               :size="width < 768 ? 'xs' : 'xl'"
-              @click="onBack"
+              @click="onBack(currentIndex)"
             />
             <UButton
               class="close-button next-button h-[calc(100vh-250px)] md:!h-[calc(100vh-100px)] absolute right-0 top-0 md:p-4 w-1/2 cursor-none"
@@ -126,32 +149,35 @@ const imageIsReady = () => {
               variant="ghost"
               :ui="{ base: '!ring-0 !bg-transparent dark:!bg-transparent target:!bg-transparent' }"
               :size="width < 768 ? 'xs' : 'xl'"
-              @click="onNext"
+              @click="onNext(currentIndex)"
             />
           </div>
         </div>
       </div> 
      <div
         id="mini-gallery"
+        ref="refMiniGallery"
         class="mini-gallery fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[260px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
       >
         <div
           class="mini-gallery flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
         >
           <div v-for="(item, index) in images" :key="index" class="xs:w-[50px] md:w-[200px]">
-            <NuxtLinkLocale
-              :to="{ path: '/', query: { index } }"
-              class="w-[50px] md:!w-[200px] block"
-            >
-              <NuxtImg
-                :id="'index-' + index"
-                :src="item.src"
-                :class="{ 'filter saturate-[0]': parseInt(route.query.index as string) === index }"
-                class="mouse-object image-item cursor-none transition duration-300 block duration-600"
-                alt="img"
-                @load="imageIsReady"
-              />
-            </NuxtLinkLocale>
+              <NuxtLinkLocale
+                :to="{ path: '/', query: { index } }"
+                class="w-[50px] md:!w-[200px] block"
+              >
+                <UseDocumentVisibility v-slot="{ visibility }">
+                    <NuxtImg
+                      :id="'index-' + index"
+                      :src="item.src"
+                      :class="{ 'filter saturate-[0]': parseInt(route.query.index as string) === index }"
+                      class="mouse-object image-item cursor-none transition duration-300 block duration-600"
+                      alt="img"
+                      @load="imageIsReady(visibility)"
+                    />
+                </UseDocumentVisibility>
+              </NuxtLinkLocale>
           </div>
         </div>
       </div> 

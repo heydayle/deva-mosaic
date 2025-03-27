@@ -21,6 +21,7 @@
     "@nuxtjs/tailwindcss": "^6.13.2",
     "@pinia/nuxt": "^0.10.1",
     "@tailwindcss/typography": "^0.5.16",
+    "@vueuse/components": "^13.0.0",
     "@vueuse/nuxt": "12.6.1",
     "googleapis": "^144.0.0",
     "gsap": "^3.12.7",

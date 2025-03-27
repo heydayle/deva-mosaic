@@ -26,12 +26,13 @@
   
   <script setup>
   
-  import { useMouse, watchOnce, useWindowSize } from "@vueuse/core";
+  import { useMouse, watchOnce, useWindowSize, useScroll } from "@vueuse/core";
   import { gsap } from "gsap";
 
   const refCursor = ref()
   const currentActiveObject = ref()
   const refBackPoint = ref()
+  const refSelectPoint = ref()
   const colorMode = useColorMode()
   const { width } = useWindowSize()
 
@@ -86,6 +87,19 @@
       isBackHover.value = false
     }
   }
+
+  const setBoundingSelectedObject = (rect) => {
+    gsap.to(refSelectPoint.value, {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: rect.height,
+      borderWidth: isViewer.value ? 2 : 4,
+      borderColor: colorMode.value === 'dark' ? 'white' : 'black',
+      borderStyle: 'dashed',
+      duration: 0.7,
+    })
+  }
   
   /**
    * Respond to any DOM element with the class of ".mouse-*" by increasing the size of the cursor
@@ -94,8 +108,8 @@
    */
   const setupMouseEffect = (className, cursorSize) => {
     document.addEventListener('click', e => {
-      const isMiniGallery = !!e.target.parentElement.parentElement.parentElement.classList.contains("mini-gallery")
-      const isImage = e.target.classList.contains("image-item")
+      const isMiniGallery = !!e?.target.parentElement.parentElement.parentElement.classList.contains("mini-gallery")
+      const isImage = e?.target.classList.contains("image-item")
 
       if (isImage && !isMiniGallery) {
         gsap.to(refBackPoint.value,{
@@ -104,13 +118,13 @@
         });
       }
     })
-    
-    const btns = document.querySelectorAll(".close-button")
-    btns.forEach(el => {
+
+    const buttons = document.querySelectorAll(".close-button")
+    buttons.forEach(el => {
       el.addEventListener('click', e => {
         const isController = e.target.classList.contains("next-button") || e.target.classList.contains("back-button")
         
-        if (isController && size < 60) {
+        if (isController && size.value < 60) {
           gsap.set(size, { duration: 0.2, value: 60 });
         }
       })
@@ -119,10 +133,10 @@
     document.addEventListener("mousemove", (event) => {
       mouseX.value = event.clientX;
       mouseY.value = event.clientY;
-      handleHoverControlButton(event.target)
       const isController = event?.target.classList.contains("next-button") || event?.target.classList.contains("back-button")
-      const isLeaveGallery = (!event.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery") && !event.target.classList.contains("mini-gallery"))
-      
+      const isLeaveGallery = (!event?.target.classList.contains("mouse-object") && !event?.target.classList.contains("gallery") && !event?.target.classList.contains("mini-gallery"))
+
+      handleHoverControlButton(event.target)
       if (isController) {
         gsap.to(size, { duration: 0.2, value: 60 });
       }
@@ -139,15 +153,13 @@
           duration: 0.5,
         })
       }
-      if (!event.target?.classList || !event.target?.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
+      if (!event?.target.classList || !event?.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
         currentActiveObject.value = null;
       }
+      // const imageActive = document.querySelector('#index-' + route.query.index)
+      // const rect = imageActive.getBoundingClientRect();
+      // setBoundingSelectedObject(rect)
     });
-    // Update the cursor position when the user scrolls mini gallery
-    if (isViewer.value) {
-      
-    }
-
     // Update the cursor position when the user scrolls
     document.addEventListener('scroll', () => {
       const hoveredElement = document.elementFromPoint(mouseX.value, mouseY.value);
@@ -165,8 +177,8 @@
 
     // Increase the size of the cursor when the user hovers over an element
     document.body.addEventListener('mouseover', (event) => {
-        if (event.target.classList.contains(className)) {
-          const rect = event.target.getBoundingClientRect();
+        if (event?.target.classList.contains(className)) {
+          const rect = event?.target.getBoundingClientRect();
           gsap.killTweensOf(size);
           gsap.to(size, { duration: 0.2, value: cursorSize  });
           
@@ -184,7 +196,7 @@
             currentActiveObject.value = event.target;
             currentActiveObject.value.classList.add('mouse-active');
             gsap.fromTo(refBackPoint.value, {
-              opacity:1,
+              opacity: 1,
               position: 'fixed',
               background: 'transparent',
             }, {
@@ -248,8 +260,7 @@
   });
 
   const refMiniGallery = ref()
-  
-  let intervalCheckMinigalleryInit
+  let intervalCheckMiniGalleryInit
 
   const setMouseForMiniGallery = (miniGallery) => {
     miniGallery.addEventListener('scroll', () => {
@@ -264,21 +275,24 @@
             duration: 0.6,
           })
         }
+        // const imageActive = document.querySelector('#index-' + route.query.index)
+        // const rect = imageActive.getBoundingClientRect();
+        // setBoundingSelectedObject(rect)
       })
   }
 
   watch(isViewer, (value) => {
     if (value) {
-      intervalCheckMinigalleryInit = setInterval(() => {
+      intervalCheckMiniGalleryInit = setInterval(() => {
         refMiniGallery.value = document.querySelector('#mini-gallery')
       }, 1000)
     } else {
-      clearInterval(intervalCheckMinigalleryInit)
+      clearInterval(intervalCheckMiniGalleryInit)
     }
   })
   watch(refMiniGallery, (value) => {
     if (value) {
-      clearInterval(intervalCheckMinigalleryInit)
+      clearInterval(intervalCheckMiniGalleryInit)
       setMouseForMiniGallery(value)
     }
   })

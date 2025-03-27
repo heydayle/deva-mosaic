@@ -50,7 +50,7 @@ interface NotionPage {
   public_url: string;
 }
 
-interface SimpleImage {
+export interface SimpleImage {
     id: string
     src: string
     alt: string

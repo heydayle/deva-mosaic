@@ -53,8 +53,8 @@ const processPercent = computed(() => Math.round((count.value / images.value.len
 const isReady = computed(() => count.value === images.value.length)
 
 const onDockingImages = () => {
-  gsap.set('.image-item', { scale: 1 })
-  gsap.timeline().from('.image-item', { scale: 0, ease: 'back' })
+  gsap.set('.image-item', { opacity: 1 })
+  gsap.timeline().from('.image-item', { opacity: 0, ease: 'back' })
 }
 const setOverflow = (hidden?: boolean) => {
   const HTMLElement = document.querySelector('html')

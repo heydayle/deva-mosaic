@@ -6,7 +6,7 @@ const theme = computed(() => colorMode.value) as Partial<'dark' | 'light' | 'sys
 
 <template>
 <div id="main-layout">
-  <Toaster richColors :theme="theme" position="top-right"/>
+  <Toaster rich-colors :theme="theme" position="top-right"/>
   <LayoutsHeader />
   <div class="m-auto max-w-[96%]">
     <NuxtPage />

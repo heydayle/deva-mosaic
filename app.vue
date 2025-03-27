@@ -53,6 +53,7 @@ useHead({
   <div class="">
     <client-only>
       <LazyNBCursor/>
+      <div id="select-cursor" />
     </client-only>
     <NuxtLayout>
       <NuxtPage />
