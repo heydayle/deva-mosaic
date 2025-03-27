@@ -16,7 +16,7 @@ const isDark = computed({
       size="xl"
       color="gray"
       :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
-      :ui="{ rounded: 'rounded-full' }"
+      :ui="{ rounded: 'rounded-full', icon: { base: 'flex-shrink-0 close-button' } }"
       @click="isDark = !isDark"
     />
   </ClientOnly>

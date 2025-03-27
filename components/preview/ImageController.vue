@@ -99,16 +99,19 @@ const imageIsReady = () => {
             />
           </div>
           <div class="cursor-none">
-             <NuxtLinkLocale
-              to="/"
-              class="close-button fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 !text-white border group hover:bg-white-50 pt-1"
-            >
-              <UIcon
-                size="32"
-                name="i-heroicons-x-mark-20-solid"
-                class="close-button text-white-50 -mb-1 transition duration-300 group-hover:bg-white group-hover:text-black"
-              />
-            </NuxtLinkLocale> 
+            <div class="fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 flex flex-col items-center space-y-4">
+              <NuxtLinkLocale
+                to="/"
+                class="close-button !text-white border group hover:bg-white-50 pt-1"
+              >
+                <UIcon
+                  size="32"
+                  name="i-heroicons-x-mark-20-solid"
+                  class="close-button text-white-50 -mb-1 transition duration-300 group-hover:bg-white group-hover:text-black"
+                />
+              </NuxtLinkLocale>
+              <NBColorMode />
+            </div>
             <UButton
               class="close-button back-button h-[calc(100vh-330px)] md:!h-[calc(100vh-100px)] absolute left-0 top-0 md:p-4 w-1/2 cursor-none"
               color="gray"
