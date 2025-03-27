@@ -13,6 +13,7 @@ const isDark = computed({
 <template>
   <ClientOnly>
     <UButton
+      class="cursor-none"
       size="xl"
       color="gray"
       :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"

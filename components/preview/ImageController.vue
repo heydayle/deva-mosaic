@@ -102,12 +102,12 @@ const imageIsReady = () => {
             <div class="fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 flex flex-col items-center space-y-4">
               <NuxtLinkLocale
                 to="/"
-                class="close-button !text-white border group hover:bg-white-50 pt-1"
+                class="close-button cursor-none !text-white border group hover:bg-white-50 pt-1"
               >
                 <UIcon
                   size="32"
                   name="i-heroicons-x-mark-20-solid"
-                  class="close-button text-white-50 -mb-1 transition duration-300 group-hover:bg-white group-hover:text-black"
+                  class="close-button text-white-50 cursor-none -mb-1 transition duration-300 group-hover:bg-white group-hover:text-black"
                 />
               </NuxtLinkLocale>
               <NBColorMode />
@@ -132,10 +132,10 @@ const imageIsReady = () => {
         </div>
       </div> 
      <div
-        class="fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[260px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
+        class="mini-gallery fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[260px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
       >
         <div
-          class="flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
+          class="mini-gallery flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
         >
           <div v-for="(item, index) in images" :key="index" class="xs:w-[50px] md:w-[200px]">
             <NuxtLinkLocale
@@ -146,7 +146,7 @@ const imageIsReady = () => {
                 :id="'index-' + index"
                 :src="item.src"
                 :class="{ 'filter saturate-[0]': parseInt(route.query.index as string) === index }"
-                class="mouse-object image-item transition duration-300 block duration-600"
+                class="mouse-object image-item cursor-none transition duration-300 block duration-600"
                 alt="img"
                 @load="imageIsReady"
               />

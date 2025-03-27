@@ -41,7 +41,7 @@ const imageIsReady = () => {
   if (count.value < images.value.length) {
     stackGridRef.value.reflow()
     count.value++
-    if (processPercent.value > 50) {
+    if (processPercent.value > 1) {
       gsap.to(refGallery.value, {
         visibility: 'visible',
         duration: 0.5
@@ -93,6 +93,7 @@ watch(isReady, (value) => {
     })
     gsap.to(refProcess.value, {
       display: 'none',
+      duration: 0.7,
       delay: 1,
     })
   }
@@ -104,18 +105,18 @@ watch(() => route.query.index, (value) => {
 </script>
 <template>
   <div>
-    <div ref="refProcess" class="fixed top-0 left-0 z-[999] w-screen h-screen flex items-center px-20">
+    <div ref="refProcess" class="fixed top-0 left-0 z-[99999] w-screen h-screen flex items-center px-20 bg-black/50 backdrop-blur-3xl">
       <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
         <template #indicator="{ percent }">
           <div class="text-center w-full">
             <span class="inline-flex text-primary-500 items-center">
-              <UIcon name="line-md:downloading-loop" class="mr-2" /> {{ percent < 5 ? 'Initializing...' : percent < 20
+              <UIcon name="line-md:downloading-loop" class="mr-2" size="24" /> {{ percent < 5 ? 'Initializing...' : percent < 20
                 ? ' Getting...' : percent < 60 ? ' Arranging...' : ' Loading...' }} </span>
           </div>
         </template>
       </UProgress>
     </div>
-    <div id="gallery" ref="refGallery" class="container py-4 relative invisible" :class="{ 'filter blur-xl': !isReady }">
+    <div id="gallery" ref="refGallery" class="container py-4 relative">
       <StackGrid
         ref="stackGridRef"
         :items="images"

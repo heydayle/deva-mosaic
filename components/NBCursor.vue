@@ -94,8 +94,10 @@
    */
   const setupMouseEffect = (className, cursorSize) => {
     document.addEventListener('click', e => {
+      const isMiniGallery = !!e.target.parentElement.parentElement.parentElement.classList.contains("mini-gallery")
       const isImage = e.target.classList.contains("image-item")
-      if (isImage) {
+      
+      if (isImage && !isMiniGallery) {
         gsap.to(refBackPoint.value,{
           opacity: 0,
           duration: 0.3
@@ -119,10 +121,12 @@
       mouseY.value = event.clientY;
       handleHoverControlButton(event.target)
       const isController = event?.target.classList.contains("next-button") || event?.target.classList.contains("back-button")
+      const isLeaveGallery = (!event.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery") && !event.target.classList.contains("mini-gallery"))
+      
       if (isController) {
         gsap.to(size, { duration: 0.2, value: 60 });
       }
-      if (!event.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
+      if (isLeaveGallery) {
         gsap.to(refBackPoint.value,{
           duration: 0.7,
           x: mouseX.value,
