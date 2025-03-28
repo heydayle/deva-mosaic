@@ -4,19 +4,37 @@ import { useWindowSize, useScroll, useIntersectionObserver } from "@vueuse/core"
 import { UseDocumentVisibility } from "@vueuse/components"
 import { useTemplateRef } from 'vue'
 
+const props = defineProps<{
+  currentCursor: string
+}>()
+
 const route = useRoute();
 const { width } = useWindowSize()
 const colorMode = useColorMode()
 
-const { currentImages } = storeToRefs(useImageStore())
-const { notionGetImages, start_cursor, allImages } = useNotion();
+const { currentImages, currentCursor } = storeToRefs(useImageStore())
+const { notionGetMoreImages, allImages } = useNotion();
 const isCurrentLoaded = ref(false);
+const isPreviewReady = ref(false)
 
-const images = computed( () => currentImages.value);
+const images = ref<SimpleImage[]>([])
+onMounted(() => {
+  images.value = currentImages.value
+})
 const currentIndex = computed(() => Number.parseInt(route.query.index));
+watch(currentCursor, (value) => {
+  images.value = currentImages.value
+})
+watch(images, async (value) => {
+  images.value = currentImages.value
+  if (route.query.index && value.length - 1 <= currentIndex.value && !isPreviewReady.value) {
+    await notionGetMoreImages(props.currentCursor);
+    images.value = allImages.value
+  }
+  else isPreviewReady.value =  true
+})
 
-
-const { scrollToImage, onBack, onNext } = useControl(images.value);
+const { scrollToImage, onBack, onNext } = useControl(images);
 defineShortcuts({
   'arrowright': () => onNext(currentIndex.value),
   'arrowdown': () => onNext(currentIndex.value),
@@ -37,7 +55,7 @@ watch(currentIndex, (value) => {
 });
 
 const isOpen = computed(
-  () => !!route.query.index?.toString() && !!currentImageFocusing.value
+  () => !!route.query.index && isPreviewReady.value && !!currentImageFocusing.value
 );
 const refImageAnimate = ref();
 
@@ -89,9 +107,10 @@ const isLoadmore = ref(false)
 const { stop } = useIntersectionObserver(
   refLoadmore,
   async ([entry]) => {
-    if (entry?.isIntersecting && start_cursor.value) {
+    if (entry?.isIntersecting && currentCursor.value) {
       isLoadmore.value = true
-      await notionGetImages()
+      await notionGetMoreImages(props.currentCursor)
+      images.value = currentImages.value
       isLoadmore.value = false
     }
   },
@@ -187,7 +206,7 @@ const { stop } = useIntersectionObserver(
                     />
                 </UseDocumentVisibility>
               </NuxtLinkLocale>
-              <div v-if="index === images.length - 12" ref="refLoadmore" />
+              <div v-if="index === images.length - 1" ref="refLoadmore" />
           </div>
           <div class="mt-4 text-center">
             <UIcon v-show="isLoadmore" size="32" name="line-md:downloading-loop" />

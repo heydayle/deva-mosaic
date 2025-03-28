@@ -7,8 +7,9 @@ interface Filter {
 export const useNotion = () => {
     const { convertNotionPagesToImageList } = useTools()
     const imageStore = useImageStore()
+    const { currentCursor } = storeToRefs(imageStore)
+
     const NOTION_IMAGE_DB = useRuntimeConfig().public.NOTION_IMAGE_DB
-    const start_cursor = ref(undefined)
     const results = ref<any>([])
     const allImages = ref<SimpleImage[]>([])
     const indexImage = ref(0)
@@ -25,15 +26,17 @@ export const useNotion = () => {
                 db_id: dbId,
                 query: {
                     ...query,
-                    start_cursor
+                    start_cursor: currentCursor.value || undefined
                 }
             }
-        })
-        start_cursor.value = response.data.value.next_cursor
-        const resResults = response?.data?.value?.results || []
+        }) 
+        
+        imageStore.setCursor(response?.data?.value?.next_cursor || undefined)
+        const resResults = response?.data.value.results || []
         results.value = [...results.value, ...resResults]
+        
         indexImage.value = allImages.value.length
-        const images = convertNotionPagesToImageList(response?.data?.value?.results)
+        const images = convertNotionPagesToImageList(response?.data.value?.results)
             .filter(item => item.src)
             .map((item, index) => ({ ...item, index: (indexImage.value + index) })) || []
 
@@ -45,9 +48,31 @@ export const useNotion = () => {
     const notionGetImages = (qarams?: Filter) => {
         return postNotion(NOTION_IMAGE_DB, qarams)
     }
+    const notionGetMoreImages = async (cursor: string) => {
+        allImages.value = [...imageStore.currentImages]
+        const response = await useFetch(NOTION_API_URL, {
+            ...OPTIONS_API,
+            body: {
+                db_id: NOTION_IMAGE_DB,
+                query: {
+                    start_cursor: cursor || undefined
+                }
+            }
+        })
+        imageStore.setCursor(response?.data?.value?.next_cursor || undefined)
+        const resResults = response?.data.value?.results || []
+        results.value = [...results.value, ...resResults]
+        indexImage.value = allImages.value.length
+        const images = convertNotionPagesToImageList(resResults)
+            .filter(item => item.src)
+            .map((item, index) => ({ ...item, index: (indexImage.value + index) })) || []
+        allImages.value = [...allImages.value, ...images]
+        imageStore.setImages(allImages.value)
+    }
     return {
-        start_cursor,
+        currentCursor,
         allImages,
         notionGetImages,
+        notionGetMoreImages,
     }
 }

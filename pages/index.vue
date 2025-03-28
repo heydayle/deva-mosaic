@@ -20,17 +20,12 @@ useHead({
 const route = useRoute()
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
+const { currentImages, currentCursor } = storeToRefs(useImageStore())
 
-const { notionGetImages, start_cursor, allImages } = useNotion()
+const { notionGetImages, notionGetMoreImages } = useNotion()
 await notionGetImages()
 
-const images = computed(() => allImages.value || [])
-const currentIndex = computed(() => Number.parseInt(route.query.index));
-
-if (currentIndex.value > images.value.length - 1) {
-  await notionGetImages();
-}
-
+const images = computed(() => currentImages.value || [])
 
 const MODES = {
   FOCUS: true,
@@ -47,17 +42,13 @@ const imageIsReady = () => {
   if (count.value < images.value.length) {
     stackGridRef.value.reflow()
     count.value++
-    if (processPercent.value > 1) {
-      gsap.to(refGallery.value, {
-        visibility: 'visible',
-        duration: 0.5
-      })
+    if (processPercent.value > 90) {
+      stackGridRef.value.reflow()
     }
   }
-  else stackGridRef.value.reflow()
 }
 const processPercent = computed(() => Math.round((count.value / images.value.length) * 100))
-const isReady = computed(() => count.value === images.value.length)
+const isReady = computed(() => !!images.value.length )
 
 const onDockingImages = () => {
   gsap.set('.image-item', { opacity: 1 })
@@ -70,13 +61,14 @@ const setOverflow = (hidden?: boolean) => {
   else HTMLElement?.setAttribute("style", "overflow: auto")
 
 }
-onMounted(() => {
+onMounted(async () => {
   setOverflow(true)
   onDockingImages()
+  setImageSize()
 })
 
 const { width, height } = useWindowSize()
-const minWidth = ref(50)
+const minWidth = ref(240)
 
 const setImageSize = () => {
   const containerWidth = document.querySelector('.container')?.clientWidth
@@ -86,13 +78,9 @@ const setImageSize = () => {
   else minWidth.value = imageSize
 }
 
-onMounted(() => {
-  setImageSize()
-})
-
 const refProcess = ref()
-watch(isReady, (value) => {
-  if (value) {
+watch(processPercent, (value) => {
+  if (value>90) {
     setOverflow()
     gsap.to(refProcess.value, {
       opacity: 0,
@@ -115,9 +103,10 @@ const isLoadmore = ref(false)
 const { stop } = useIntersectionObserver(
   refLoadmore,
   async ([entry]) => {
-    if (entry?.isIntersecting && start_cursor.value) {
+    if (entry?.isIntersecting && currentCursor.value) {
       isLoadmore.value = true
-      await notionGetImages()
+      await notionGetMoreImages(currentCursor.value)
+      stackGridRef.value.reflow()
       isLoadmore.value = false
     }
   },
@@ -168,13 +157,13 @@ const onBackToTop = () => {
               @load="imageIsReady"
             />
           </NuxtLinkLocale>
-          <div v-if="item.index === images.length - 12" ref="refLoadmore" />
         </template>
       </StackGrid>
+      <div v-if="isReady" ref="refLoadmore" />
       <div class="mt-4 text-center">
         <UIcon v-show="isLoadmore" size="48" name="line-md:downloading-loop" />
       </div>
-      <PreviewImageController v-if="isReady" />
+      <PreviewImageController v-if="isReady" :currentCursor="currentCursor" />
     </div>
   </div>
 </template>
