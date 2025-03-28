@@ -16,9 +16,10 @@ onMounted(() => {
         <UButton :to="github.href" variant="ghost" color="white" class="text-xl text-white dark:text-white">
           <UIcon :name="github.icon" size="22" class="text-xl"/>
         </UButton>
-        <div class="fixed z-[1] bottom-12 right-12 flex flex-col space-y-4">
+        <div class="fixed z-[1] bottom-24 right-12 flex flex-col space-y-4">
           <NBColorMode />
           <NBFocusMode />
+          <div id="back-to-top" />
         </div>
         <SelectLanguage />
       </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import StackGrid from '@crob/vue-stack-grid';
 import { gsap } from "gsap";
-import { useWindowSize } from "@vueuse/core";
+import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
 definePageMeta({
   layout: "landing",
@@ -17,14 +17,15 @@ useHead({
   ]
 });
 
-const { notionGetImages } = useNotion()
-const { convertNotionPagesToImageList } = useTools()
-const { data } = await notionGetImages()
-const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src).map((item, index) => ({ ...item, index: index })) || [])
-
 const route = useRoute()
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
+const { currentImages, currentCursor } = storeToRefs(useImageStore())
+
+const { notionGetImages, notionGetMoreImages } = useNotion()
+await notionGetImages()
+
+const images = computed(() => currentImages.value || [])
 
 const MODES = {
   FOCUS: true,
@@ -41,16 +42,13 @@ const imageIsReady = () => {
   if (count.value < images.value.length) {
     stackGridRef.value.reflow()
     count.value++
-    if (processPercent.value > 1) {
-      gsap.to(refGallery.value, {
-        visibility: 'visible',
-        duration: 0.5
-      })
+    if (processPercent.value > 90) {
+      stackGridRef.value.reflow()
     }
   }
 }
 const processPercent = computed(() => Math.round((count.value / images.value.length) * 100))
-const isReady = computed(() => count.value === images.value.length)
+const isReady = computed(() => !!images.value.length )
 
 const onDockingImages = () => {
   gsap.set('.image-item', { opacity: 1 })
@@ -63,13 +61,14 @@ const setOverflow = (hidden?: boolean) => {
   else HTMLElement?.setAttribute("style", "overflow: auto")
 
 }
-onMounted(() => {
+onMounted(async () => {
   setOverflow(true)
   onDockingImages()
+  setImageSize()
 })
 
-const { width } = useWindowSize()
-const minWidth = ref(50)
+const { width, height } = useWindowSize()
+const minWidth = ref(240)
 
 const setImageSize = () => {
   const containerWidth = document.querySelector('.container')?.clientWidth
@@ -79,13 +78,9 @@ const setImageSize = () => {
   else minWidth.value = imageSize
 }
 
-onMounted(() => {
-  setImageSize()
-})
-
 const refProcess = ref()
-watch(isReady, (value) => {
-  if (value) {
+watch(processPercent, (value) => {
+  if (value>90) {
     setOverflow()
     gsap.to(refProcess.value, {
       opacity: 0,
@@ -102,9 +97,31 @@ watch(() => route.query.index, (value) => {
   setOverflow(!!value?.toString())
 })
 
+const refLoadmore = useTemplateRef<HTMLDivElement>('refLoadmore')
+const isLoadmore = ref(false)
+
+const { stop } = useIntersectionObserver(
+  refLoadmore,
+  async ([entry]) => {
+    if (entry?.isIntersecting && currentCursor.value) {
+      isLoadmore.value = true
+      await notionGetMoreImages(currentCursor.value)
+      stackGridRef.value.reflow()
+      isLoadmore.value = false
+    }
+  },
+)
+
+const { y } = useWindowScroll({ behavior: 'smooth' })
+const onBackToTop = () => {
+  y.value = 0
+}
 </script>
 <template>
   <div>
+    <Teleport to="#back-to-top">
+      <NBScrollToTop @click="onBackToTop"/>
+    </Teleport>
     <div ref="refProcess" class="fixed top-0 left-0 z-[99999] w-screen h-screen flex items-center px-20 bg-black/50 backdrop-blur-3xl">
       <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
         <template #indicator="{ percent }">
@@ -142,7 +159,11 @@ watch(() => route.query.index, (value) => {
           </NuxtLinkLocale>
         </template>
       </StackGrid>
-      <PreviewImageController />
+      <div v-if="isReady" ref="refLoadmore" />
+      <div class="mt-4 text-center">
+        <UIcon v-show="isLoadmore" size="48" name="line-md:downloading-loop" />
+      </div>
+      <PreviewImageController v-if="isReady" :currentCursor="currentCursor" />
     </div>
   </div>
 </template>
