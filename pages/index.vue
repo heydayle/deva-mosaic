@@ -122,7 +122,7 @@ const onBackToTop = () => {
 <template>
   <div>
     <Teleport to="#back-to-top">
-      <NBScrollToTop @click="onBackToTop"/>
+      <NBScrollToTop v-if="y > 300" @click="onBackToTop"/>
     </Teleport>
     <div ref="refProcess" class="fixed top-0 left-0 z-[99999] w-screen h-screen flex items-center px-20 bg-black/50 backdrop-blur-3xl">
       <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
