@@ -1,6 +1,6 @@
-# Library of memory!
+# Deva-mosaic [Pomegranate]
 
-A curated collection of all the amazing moments captured through my lens 🚀
+A divine space where memories and past moments are pieced together like fragments, forming a vivid, eternal tapestry. 
 
 ## Features
 
