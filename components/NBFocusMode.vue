@@ -17,7 +17,7 @@ const changeFocusMode = () => {
       size="xl"
       color="gray"
       :icon="isFocusing ? 'ph:cube-focus-fill' : 'tabler:layout-collage'"
-      :ui="{ rounded: 'rounded-full' }"
+      :ui="{ rounded: 'rounded-full', icon: { base: 'flex-shrink-0 close-button' } }"
       class="mouse-sm"
       @click="changeFocusMode"
     />

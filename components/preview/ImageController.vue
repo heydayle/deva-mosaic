@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { gsap } from "gsap";
-import { useWindowSize, useScroll } from "@vueuse/core"
+import { useWindowSize, useScroll, useIntersectionObserver } from "@vueuse/core"
 import { UseDocumentVisibility } from "@vueuse/components"
 import { useTemplateRef } from 'vue'
 
@@ -8,18 +8,13 @@ const route = useRoute();
 const { width } = useWindowSize()
 const colorMode = useColorMode()
 
-const { notionGetImages } = useNotion();
-const { convertNotionPagesToImageList } = useTools();
-const { data } = await notionGetImages();
+const { currentImages } = storeToRefs(useImageStore())
+const { notionGetImages, start_cursor, allImages } = useNotion();
 const isCurrentLoaded = ref(false);
 
-const images = computed(
-  () =>
-    convertNotionPagesToImageList(data.value.results).filter(
-      (item) => item.src
-    ) || []
-);
+const images = computed( () => currentImages.value);
 const currentIndex = computed(() => Number.parseInt(route.query.index));
+
 
 const { scrollToImage, onBack, onNext } = useControl(images.value);
 defineShortcuts({
@@ -87,9 +82,23 @@ watch(y, () => {
     setBoundingSelectedObject()
   }
 })
+
+const refLoadmore = useTemplateRef<HTMLDivElement>('refLoadmore')
+const isLoadmore = ref(false)
+
+const { stop } = useIntersectionObserver(
+  refLoadmore,
+  async ([entry]) => {
+    if (entry?.isIntersecting && start_cursor.value) {
+      isLoadmore.value = true
+      await notionGetImages()
+      isLoadmore.value = false
+    }
+  },
+)
 </script>
 <template>
-  <div class="!h-[calc(100vh-200px)]">
+  <div>
     <UModal
       v-model="isOpen"
       fullscreen
@@ -178,6 +187,10 @@ watch(y, () => {
                     />
                 </UseDocumentVisibility>
               </NuxtLinkLocale>
+              <div v-if="index === images.length - 12" ref="refLoadmore" />
+          </div>
+          <div class="mt-4 text-center">
+            <UIcon v-show="isLoadmore" size="32" name="line-md:downloading-loop" />
           </div>
         </div>
       </div> 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import StackGrid from '@crob/vue-stack-grid';
 import { gsap } from "gsap";
-import { useWindowSize } from "@vueuse/core";
+import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
 definePageMeta({
   layout: "landing",
@@ -17,14 +17,20 @@ useHead({
   ]
 });
 
-const { notionGetImages } = useNotion()
-const { convertNotionPagesToImageList } = useTools()
-const { data } = await notionGetImages()
-const images = computed(() => convertNotionPagesToImageList(data.value.results).filter(item => item.src).map((item, index) => ({ ...item, index: index })) || [])
-
 const route = useRoute()
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
+
+const { notionGetImages, start_cursor, allImages } = useNotion()
+await notionGetImages()
+
+const images = computed(() => allImages.value || [])
+const currentIndex = computed(() => Number.parseInt(route.query.index));
+
+if (currentIndex.value > images.value.length - 1) {
+  await notionGetImages();
+}
+
 
 const MODES = {
   FOCUS: true,
@@ -48,6 +54,7 @@ const imageIsReady = () => {
       })
     }
   }
+  else stackGridRef.value.reflow()
 }
 const processPercent = computed(() => Math.round((count.value / images.value.length) * 100))
 const isReady = computed(() => count.value === images.value.length)
@@ -68,7 +75,7 @@ onMounted(() => {
   onDockingImages()
 })
 
-const { width } = useWindowSize()
+const { width, height } = useWindowSize()
 const minWidth = ref(50)
 
 const setImageSize = () => {
@@ -102,9 +109,30 @@ watch(() => route.query.index, (value) => {
   setOverflow(!!value?.toString())
 })
 
+const refLoadmore = useTemplateRef<HTMLDivElement>('refLoadmore')
+const isLoadmore = ref(false)
+
+const { stop } = useIntersectionObserver(
+  refLoadmore,
+  async ([entry]) => {
+    if (entry?.isIntersecting && start_cursor.value) {
+      isLoadmore.value = true
+      await notionGetImages()
+      isLoadmore.value = false
+    }
+  },
+)
+
+const { y } = useWindowScroll({ behavior: 'smooth' })
+const onBackToTop = () => {
+  y.value = 0
+}
 </script>
 <template>
   <div>
+    <Teleport to="#back-to-top">
+      <NBScrollToTop @click="onBackToTop"/>
+    </Teleport>
     <div ref="refProcess" class="fixed top-0 left-0 z-[99999] w-screen h-screen flex items-center px-20 bg-black/50 backdrop-blur-3xl">
       <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
         <template #indicator="{ percent }">
@@ -140,9 +168,13 @@ watch(() => route.query.index, (value) => {
               @load="imageIsReady"
             />
           </NuxtLinkLocale>
+          <div v-if="item.index === images.length - 12" ref="refLoadmore" />
         </template>
       </StackGrid>
-      <PreviewImageController />
+      <div class="mt-4 text-center">
+        <UIcon v-show="isLoadmore" size="48" name="line-md:downloading-loop" />
+      </div>
+      <PreviewImageController v-if="isReady" />
     </div>
   </div>
 </template>

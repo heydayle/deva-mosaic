@@ -9,15 +9,17 @@ export const useControl = (images: SimpleImage[]) => {
   };
 
   const onBack = (index: number) => {
+    console.log(index);
+    
     currentIndex.value = index - 1;
-    if (currentIndex.value < 0) index = images.length - 1;
+    if (index - 1 < 0) currentIndex.value = images.length - 1;
     const backRoute = localeRoute({ name: "Home", query: { index: currentIndex.value } });
     navigateTo(backRoute);
     scrollToImage(currentIndex.value);
   };
   const onNext = (index: number) => {
     currentIndex.value = index + 1;
-    if (currentIndex.value > images.length - 1) currentIndex.value = 0;
+    if (index + 1 > images.length - 1) currentIndex.value = 0;
     const nextRoute = localeRoute({ name: "Home", query: { index: currentIndex.value } });
     navigateTo(nextRoute);
     scrollToImage(currentIndex.value);
