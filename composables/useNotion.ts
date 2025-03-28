@@ -7,7 +7,7 @@ interface Filter {
 export const useNotion = () => {
     const { convertNotionPagesToImageList } = useTools()
     const imageStore = useImageStore()
-    const { currentCursor } = storeToRefs(imageStore)
+    const { currentCursor, isMaxPage } = storeToRefs(imageStore)
 
     const NOTION_IMAGE_DB = useRuntimeConfig().public.NOTION_IMAGE_DB
     const results = ref<any>([])
@@ -60,6 +60,7 @@ export const useNotion = () => {
             }
         })
         imageStore.setCursor(response?.data?.value?.next_cursor || undefined)
+        isMaxPage.value = !response?.data?.value?.next_cursor
         const resResults = response?.data.value?.results || []
         results.value = [...results.value, ...resResults]
         indexImage.value = allImages.value.length
