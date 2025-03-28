@@ -6,9 +6,9 @@ export default defineAppConfig({
   app: {
     version: 'Devaloka',
     meta: {
-      title: 'Library Of Memory',
-      description: 'Nuxt Starter with Vite',
-      keywords: 'nuxt, vite, starter',
+      title: 'Deva-mosaic',
+      description: 'A divine space where memories and past moments are pieced together like fragments, forming a vivid, eternal tapestry.',
+      keywords: 'images, photos, stocks, devaloka, devamosaic, deva-mosaic, thinhle',
       image: '/cover.png',
       author: 'Thinh Le',
       publisher: 'Thinh Le',
@@ -22,7 +22,7 @@ export default defineAppConfig({
       },
     ],
     headers: {
-      heading: 'Nuxt Starter',
+      heading: 'Deva-mosaic',
       logo: "/logo.svg",
       navigation: [
         {
