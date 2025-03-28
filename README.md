@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="https://static-00.iconduck.com/assets.00/pomegranate-emoji-119x128-stiunqhd.png">
+  <img src="./public/logo-text.svg" width="300">
 </p>
-
-# Deva-mosaic
 
 A divine space where memories and past moments are pieced together like fragments, forming a vivid, eternal tapestry. 
 
