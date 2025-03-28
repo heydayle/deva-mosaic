@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useImageStore = defineStore('useImageStore', () => {
     const currentImages = ref<any[]>([])
     const currentCursor = ref<string | undefined>(undefined)
+    const isMaxPage = ref<boolean>(false)
     
     function setImages(newImages: any[]) {
       currentImages.value = newImages
@@ -11,5 +12,5 @@ export const useImageStore = defineStore('useImageStore', () => {
       currentCursor.value = newCursor
     }
   
-    return { currentImages, currentCursor, setImages, setCursor }
+    return { isMaxPage, currentImages, currentCursor, setImages, setCursor }
 })

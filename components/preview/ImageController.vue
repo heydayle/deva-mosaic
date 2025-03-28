@@ -12,7 +12,7 @@ const route = useRoute();
 const { width } = useWindowSize()
 const colorMode = useColorMode()
 
-const { currentImages, currentCursor } = storeToRefs(useImageStore())
+const { currentImages, currentCursor, isMaxPage } = storeToRefs(useImageStore())
 const { notionGetMoreImages, allImages } = useNotion();
 const isCurrentLoaded = ref(false);
 const isPreviewReady = ref(false)
@@ -27,7 +27,7 @@ watch(currentCursor, (value) => {
 })
 watch(images, async (value) => {
   images.value = currentImages.value
-  if (route.query.index && value.length - 1 <= currentIndex.value && !isPreviewReady.value) {
+  if (route.query.index && value.length - 1 <= currentIndex.value && !isPreviewReady.value && !isMaxPage.value) {
     await notionGetMoreImages(props.currentCursor);
     images.value = allImages.value
   }
