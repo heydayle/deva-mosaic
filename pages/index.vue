@@ -3,12 +3,14 @@ import StackGrid from '@crob/vue-stack-grid';
 import { gsap } from "gsap";
 import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
+const { app } = useAppConfig()
+
 definePageMeta({
   layout: "landing",
   name: 'Home'
 });
 useHead({
-  title: 'Library of memory!',
+  title: app.meta.title,
   meta: [
     {
       name: 'description',

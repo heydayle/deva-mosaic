@@ -5,7 +5,7 @@ import { UseDocumentVisibility } from "@vueuse/components"
 import { useTemplateRef } from 'vue'
 
 const props = defineProps<{
-  currentCursor: string
+  currentCursor?: string
 }>()
 
 const route = useRoute();
