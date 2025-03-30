@@ -9,6 +9,7 @@ const props = defineProps<{
 }>()
 
 const route = useRoute();
+const { gtag } = useGtag()
 const { width } = useWindowSize()
 const colorMode = useColorMode()
 
@@ -31,7 +32,9 @@ watch(images, async (value) => {
     await notionGetMoreImages(props.currentCursor);
     images.value = allImages.value
   }
-  else isPreviewReady.value =  true
+  else {
+    isPreviewReady.value =  true
+  }
 })
 
 const { scrollToImage, onBack, onNext } = useControl(images);
@@ -51,12 +54,21 @@ watch(currentIndex, (value) => {
   isCurrentLoaded.value = false;
   if (value.toString()) {
     setBoundingSelectedObject()
+    gtag('event', 'page_view', {
+      page_title: `Gallery - Image ${route.query.index}`,
+    })
   }
 });
 
 const isOpen = computed(
   () => !!route.query.index && isPreviewReady.value && !!currentImageFocusing.value
 );
+watch(isOpen, (value) => {
+  if (value)
+    gtag('event', 'page_view', {
+      page_title: `Gallery - Image ${route.query.index}`,
+    })
+})
 const refImageAnimate = ref();
 
 const currentImageLoaded = () => {

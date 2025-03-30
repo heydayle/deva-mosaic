@@ -4,6 +4,11 @@ import { gsap } from "gsap";
 import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
 const { app } = useAppConfig()
+const { gtag } = useGtag()
+const route = useRoute()
+const store = useStore()
+const { isFocusing } = storeToRefs(store)
+const { currentImages, currentCursor } = storeToRefs(useImageStore())
 
 definePageMeta({
   layout: "landing",
@@ -19,10 +24,9 @@ useHead({
   ]
 });
 
-const route = useRoute()
-const store = useStore()
-const { isFocusing } = storeToRefs(store)
-const { currentImages, currentCursor } = storeToRefs(useImageStore())
+gtag('event', 'page_view', {
+  page_title: `Gallery ${route?.query?.index ? `- Image ${route.query.index}` : ''}`,
+})
 
 const { notionGetImages, notionGetMoreImages } = useNotion()
 await notionGetImages()
@@ -69,7 +73,7 @@ onMounted(async () => {
   setImageSize()
 })
 
-const { width, height } = useWindowSize()
+const { width } = useWindowSize()
 const minWidth = ref(240)
 
 const setImageSize = () => {

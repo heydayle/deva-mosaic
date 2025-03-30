@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     '@nuxtjs/eslint-module',
     '@nuxtjs/mdc',
     '@nuxtjs/tailwindcss',
+    'nuxt-gtag'
   ],
   routeRules: {
     // '/': { prerender: true }
@@ -26,6 +27,9 @@ export default defineNuxtConfig({
         NOTION_SECRET_KEY: process.env.NOTION_SECRET_KEY,
         NOTION_IMAGE_DB: process.env.NOTION_IMAGE_DB,
     }
+  },
+  gtag: {
+    id: process.env.GG_GTAG_KEY || 'G-xxxxxxxx',
   },
   image: {
     // provider: 'ipx',
