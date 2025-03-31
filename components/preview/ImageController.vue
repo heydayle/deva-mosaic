@@ -55,7 +55,7 @@ watch(currentIndex, (value) => {
   if (value.toString()) {
     setBoundingSelectedObject()
     gtag('event', 'page_view', {
-      page_title: `Gallery - Image ${route.query.index}`,
+      page_title: `Gallery${route.query.index ?  ' - Image ' + route.query.index : ''}`,
     })
   }
 });
@@ -63,12 +63,12 @@ watch(currentIndex, (value) => {
 const isOpen = computed(
   () => !!route.query.index && isPreviewReady.value && !!currentImageFocusing.value
 );
-watch(isOpen, (value) => {
-  if (value)
-    gtag('event', 'page_view', {
-      page_title: `Gallery - Image ${route.query.index}`,
-    })
-})
+// watch(isOpen, (value) => {
+//   if (value)
+//     gtag('event', 'page_view', {
+//       page_title: `Gallery - Image ${route.query.index}`,
+//     })
+// })
 const refImageAnimate = ref();
 
 const currentImageLoaded = () => {

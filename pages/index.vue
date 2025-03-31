@@ -14,19 +14,6 @@ definePageMeta({
   layout: "landing",
   name: 'Home'
 });
-useHead({
-  title: app.meta.title,
-  meta: [
-    {
-      name: 'description',
-      content: 'Memories of Thinh'
-    }
-  ]
-});
-
-gtag('event', 'page_view', {
-  page_title: `Gallery ${route?.query?.index ? `- Image ${route.query.index}` : ''}`,
-})
 
 const { notionGetImages, notionGetMoreImages } = useNotion()
 await notionGetImages()

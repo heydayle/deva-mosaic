@@ -47,6 +47,15 @@ useHead({
   ],
   script: [{ src: 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js' }]
 })
+useHead({
+  title: app.meta.title,
+  meta: [
+    {
+      name: 'description',
+      content: 'Memories of Thinh'
+    }
+  ]
+});
 
 </script>
 <template>

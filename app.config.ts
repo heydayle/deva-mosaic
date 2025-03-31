@@ -6,7 +6,7 @@ export default defineAppConfig({
   app: {
     version: 'Devaloka',
     meta: {
-      title: 'Deva-mosaic',
+      title: 'Deva Mosa',
       description: 'A divine space where memories and past moments are pieced together like fragments, forming a vivid, eternal tapestry.',
       keywords: 'images, photos, stocks, devaloka, devamosaic, deva-mosaic, thinhle',
       image: '/cover.png',
