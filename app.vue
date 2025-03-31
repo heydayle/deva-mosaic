@@ -22,7 +22,7 @@ useHead({
     },
     {
       name: 'image',
-      content: '/cover.png',
+      content: 'https://memories.thinh.io.vn/cover.png',
     },
     {
       name: 'author',
@@ -42,7 +42,7 @@ useHead({
     },
     {
       name: 'og:image',
-      content: '/cover.png',
+      content: 'https://memories.thinh.io.vn/cover.png',
     },
   ],
   script: [{ src: 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js' }]
