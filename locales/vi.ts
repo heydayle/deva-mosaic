@@ -16,4 +16,7 @@ export default {
         getStarted: 'Bắt đầu',
         description: 'Framework sử dụng cho các dự án Nuxt, được cấu hình sẵn với các thư viện và công cụ thiết yếu, hợp lý hóa quá trình phát triển, đảm bảo cơ sở mã sạch và có cấu trúc. 🚀'
     },
+    close: 'dong',
+    next: 'tiep theo',
+    previous: 'lui lai'
 }

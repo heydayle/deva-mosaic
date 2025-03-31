@@ -63,12 +63,6 @@ watch(currentIndex, (value) => {
 const isOpen = computed(
   () => !!route.query.index && isPreviewReady.value && !!currentImageFocusing.value
 );
-// watch(isOpen, (value) => {
-//   if (value)
-//     gtag('event', 'page_view', {
-//       page_title: `Gallery - Image ${route.query.index}`,
-//     })
-// })
 const refImageAnimate = ref();
 
 const currentImageLoaded = () => {
@@ -165,13 +159,9 @@ const { stop } = useIntersectionObserver(
             <div class="fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 flex flex-col items-center space-y-4">
               <NuxtLinkLocale
                 to="/"
-                class="close-button cursor-none !text-white border group hover:bg-white-50 pt-1"
+                class="cursor-none mouse-object !text-white-50 text-4xl group"
               >
-                <UIcon
-                  size="32"
-                  name="i-heroicons-x-mark-20-solid"
-                  class="close-button text-white-50 cursor-none -mb-1 transition duration-300 group-hover:bg-white group-hover:text-black"
-                />
+                {{ $t('close') }}
               </NuxtLinkLocale>
               <NBColorMode />
             </div>

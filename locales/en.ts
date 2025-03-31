@@ -16,4 +16,7 @@ export default {
         getStarted: 'Get started',
         description: 'Ready-to-use framework for Nuxt projects, pre-configured framework with essential libraries and tools, streamlining development and ensuring a clean, structured codebase. 🚀'
     },
+    close: 'close',
+    next: 'next',
+    previous: 'previous'
 }

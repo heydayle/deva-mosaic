@@ -4,37 +4,62 @@
           id="cursor-main"
           ref="refCursor"
           :class="cursorClasses"
-          class="bg-white p-4"
+          class="bg-white p-4 overflow-visible"
           :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"
       >
-        <UIcon
-          v-if="isBackHover"
-          name="ic:outline-arrow-back-ios"
-          :size="width < 768 ? 16 : 24"
-          class="close-button text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black m-auto"
-        />
-        <UIcon
-          v-if="isNextHover"
-          name="ic:outline-arrow-forward-ios"
-          :size="width < 768 ? 16 : 24"
-          class="close-button text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black"
-        />
+        <div v-show="isBackHover" class="mt-12 -ml-6">
+          <div class="inline-flex items-center space-x-4 text-4xl whitespace-nowrap">
+            <UIcon
+              name="ic:outline-arrow-back-ios"
+              :size="width < 768 ? 16 : 24"
+              class="close-button text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black -mt-2"
+            />
+            <span>{{ $t('previous') }}</span>
+          </div>
+        </div>
+        <div v-show="isNextHover" class="mt-12 -ml-6">
+          <div class="inline-flex items-center space-x-4 text-4xl whitespace-nowrap">
+            <span>{{ $t('next') }}</span>
+            <UIcon
+              name="ic:outline-arrow-forward-ios"
+              :size="width < 768 ? 16 : 24"
+              class="close-button text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black"
+            />
+          </div>
+        </div>
       </div>
-      <div ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }" />
+      <div ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }"/>
+      <div v-if="!isViewer" ref="refClickToView" class="fixed top-4 left-4 z-[99999] text-6xl bg-black/30 mix-blend-difference pointer-events-none">
+        click to view!
+      </div>
   </div>
   </template>
   
   <script setup>
   
-  import { useMouse, watchOnce, useWindowSize, useScroll } from "@vueuse/core";
+  import { useMouse, watchOnce, useWindowSize, useScroll, useElementBounding } from "@vueuse/core";
   import { gsap } from "gsap";
 
   const refCursor = ref()
   const currentActiveObject = ref()
   const refBackPoint = ref()
+  const refClickToView = ref()
   const refSelectPoint = ref()
   const colorMode = useColorMode()
   const { width } = useWindowSize()
+
+  
+  const { x: xBack, y: yBack, bottom: bottomBack } = useElementBounding(refBackPoint)
+
+  watch(xBack, (value) => {
+    if (currentActiveObject.value)
+      gsap.to(refClickToView.value, {
+        opacity: 1,
+        x: value,
+        y: yBack.value < 20 ? bottomBack.value - 80 : yBack.value
+      })
+  })
+
 
   const isNextHover = ref(false)
   const isBackHover = ref(false)
@@ -118,17 +143,6 @@
         });
       }
     })
-
-    const buttons = document.querySelectorAll(".close-button")
-    buttons.forEach(el => {
-      el.addEventListener('click', e => {
-        const isController = e.target.classList.contains("next-button") || e.target.classList.contains("back-button")
-        
-        if (isController && size.value < 60) {
-          gsap.set(size, { duration: 0.2, value: 60 });
-        }
-      })
-    })
     // Update the cursor position when the mouse moves
     document.addEventListener("mousemove", (event) => {
       mouseX.value = event.clientX;
@@ -138,7 +152,7 @@
 
       handleHoverControlButton(event.target)
       if (isController) {
-        gsap.to(size, { duration: 0.2, value: 60 });
+        gsap.to(size, { duration: 0.2, value: 10 });
       }
       if (isLeaveGallery) {
         gsap.to(refBackPoint.value,{
@@ -151,6 +165,10 @@
         gsap.to(refCursor.value, {
           opacity: 1,
           duration: 0.5,
+        })
+        gsap.to(refClickToView.value, {
+          opacity: 0,
+          duration: 0.2,
         })
       }
       if (!event?.target.classList || !event?.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {

@@ -62,9 +62,9 @@ export default defineNuxtConfig({
     ],
   },
   fonts: {
-    families: [
-      { name: 'Be Vietnam Pro', provider: 'google' },
-    ],
+    // families: [
+    //   { name: 'Be Vietnam Pro', provider: 'google' },
+    // ],
     defaults: {
       weights: [400, 500, 600, 700, 800, 900],
       styles: ['normal', 'italic'],
