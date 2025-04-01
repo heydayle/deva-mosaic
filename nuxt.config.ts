@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     }
   },
   gtag: {
-    enabled: process.env.NODE_ENV === 'production',
+    enabled: process.env.NODE_ENV !== 'dev',
     id: process.env.GG_GTAG_KEY || 'G-xxxxxxxx',
   },
   image: {
