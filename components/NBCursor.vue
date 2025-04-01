@@ -29,7 +29,7 @@
         </div>
       </div>
       <div ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }"/>
-      <div v-if="!isViewer" ref="refClickToView" class="fixed top-4 left-4 z-[99999] text-6xl bg-black/30 mix-blend-difference pointer-events-none">
+      <div v-if="!isViewer" ref="refClickToView" class="fixed top-4 left-4 z-[99999] text-6xl bg-black/30 mix-blend-difference pointer-events-none opacity-0">
         click to view!
       </div>
   </div>
@@ -189,6 +189,12 @@
           width: rect.width + 30,
           height: rect.height + 30,
           duration: 0.6,
+        })
+        gsap.to(refClickToView.value, {
+          opacity: 1,
+          x: rect.x,
+          y: rect.y < 20 ? rect.bottom - 80 : rect.y,
+          duration: 0.7
         })
       }
     });
