@@ -82,7 +82,7 @@ watch(processPercent, (value) => {
     gsap.to(refProcess.value, {
       display: 'none',
       duration: 0.7,
-      delay: 1,
+      delay: 0.3,
     })
   }
 })

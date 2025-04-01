@@ -28,8 +28,8 @@
           </div>
         </div>
       </div>
-      <div ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }"/>
-      <div v-if="!isViewer" ref="refClickToView" class="fixed top-4 left-4 z-[99999] text-6xl bg-black/30 mix-blend-difference pointer-events-none opacity-0">
+      <div v-if="width > 767" ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }"/>
+      <div v-if="!isViewer && width > 767" ref="refClickToView" class="fixed top-4 left-4 z-[99999] text-6xl bg-black/30 mix-blend-difference pointer-events-none opacity-0">
         click to view!
       </div>
   </div>
