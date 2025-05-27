@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import StackGrid from '@crob/vue-stack-grid';
 import { gsap } from "gsap";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
 const { app } = useAppConfig()
-const { gtag } = useGtag()
+// const { gtag } = useGtag()
 const route = useRoute()
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
@@ -41,7 +42,7 @@ const imageIsReady = () => {
   }
 }
 const processPercent = computed(() => Math.round((count.value / images.value.length) * 100))
-const isReady = computed(() => !!images.value.length )
+const isReady = computed(() => !!images.value.length)
 
 const onDockingImages = () => {
   gsap.set('.image-item', { opacity: 1 })
@@ -54,10 +55,18 @@ const setOverflow = (hidden?: boolean) => {
   else HTMLElement?.setAttribute("style", "overflow: auto")
 
 }
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+const initScroll = () => {
+  ScrollSmoother.create({
+    content: '#gallery',
+    smooth: 1.2
+  })
+}
 onMounted(async () => {
-  setOverflow(true)
+  // setOverflow(true)
   onDockingImages()
   setImageSize()
+  initScroll()
 })
 
 const { width } = useWindowSize()
@@ -73,7 +82,7 @@ const setImageSize = () => {
 
 const refProcess = ref()
 watch(processPercent, (value) => {
-  if (value>90) {
+  if (value > 90) {
     setOverflow()
     gsap.to(refProcess.value, {
       opacity: 0,
@@ -113,42 +122,30 @@ const onBackToTop = () => {
 <template>
   <div>
     <Teleport to="#back-to-top">
-      <NBScrollToTop v-if="y > 300" @click="onBackToTop"/>
+      <NBScrollToTop v-if="y > 300" @click="onBackToTop" />
     </Teleport>
-    <div ref="refProcess" class="fixed top-0 left-0 z-[99999] w-screen h-screen flex items-center px-20 bg-black/50 backdrop-blur-3xl">
+    <!-- <div ref="refProcess"
+      class="fixed top-0 left-0 z-[99999] w-screen h-screen flex items-center px-20 bg-black/50 backdrop-blur-3xl">
       <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
         <template #indicator="{ percent }">
           <div class="text-center w-full">
             <span class="inline-flex text-primary-500 items-center">
-              <UIcon name="line-md:downloading-loop" class="mr-2" size="24" /> {{ percent < 5 ? 'Initializing...' : percent < 20
-                ? ' Getting...' : percent < 60 ? ' Arranging...' : ' Loading...' }} </span>
+              <UIcon name="line-md:downloading-loop" class="mr-2" size="24" /> {{ percent < 5 ? 'Initializing...' :
+                percent < 20 ? ' Getting...' : percent < 60 ? ' Arranging...' : ' Loading...' }} </span>
           </div>
         </template>
       </UProgress>
-    </div>
+    </div> -->
     <div id="gallery" ref="refGallery" class="container py-4 relative">
-      <StackGrid
-        ref="stackGridRef"
-        :items="images"
-        :column-min-width="minWidth"
-        :gutter-width="20"
-        :gutter-height="20"
-        class="gallery"
-      >
+      <StackGrid ref="stackGridRef" :items="images" :column-min-width="minWidth" :gutter-width="20" :gutter-height="20"
+        class="gallery">
         <template #item="{ item }">
-          <NuxtLinkLocale :to="{ path: '/', query: { index: item.index }}">
-            <NuxtImg
-              :src="item.src"
-              :class="[
-                { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
-                { 'hover:rounded-md': mode === MODES.FOCUS }]"
-              class="mouse-object image-item transition duration-300 block cursor-none"
-              alt="img"
-              loading="lazy"
-              @mouseenter="itemHover = item.id"
-              @mouseleave="itemHover = ''"
-              @load="imageIsReady"
-            />
+          <NuxtLinkLocale :to="{ path: '/', query: { index: item.index } }">
+            <NuxtImg :src="item.src" :class="[
+              { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
+              { 'hover:rounded-md': mode === MODES.FOCUS }]"
+              class="mouse-object image-item transition duration-300 block cursor-none" alt="img" loading="lazy"
+              @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" @load="imageIsReady" />
           </NuxtLinkLocale>
         </template>
       </StackGrid>
