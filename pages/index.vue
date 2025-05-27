@@ -55,8 +55,8 @@ const setOverflow = (hidden?: boolean) => {
   else HTMLElement?.setAttribute("style", "overflow: auto")
 
 }
-gsap.registerPlugin(ScrollSmoother);
 const initScroll = () => {
+  gsap.registerPlugin(ScrollSmoother);
   ScrollSmoother.create({
     content: '#gallery',
     smooth: 1.2
