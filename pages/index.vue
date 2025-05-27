@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import StackGrid from '@crob/vue-stack-grid';
-import { gsap } from "gsap";
+// import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
-const { app } = useAppConfig()
-const { gtag } = useGtag()
 const route = useRoute()
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
 const { currentImages, currentCursor } = storeToRefs(useImageStore())
 
+const { $gsap: gsap } = useNuxtApp();
 definePageMeta({
   layout: "landing",
   name: 'Home'
@@ -56,17 +55,23 @@ const setOverflow = (hidden?: boolean) => {
 
 }
 const initScroll = () => {
-  gsap.registerPlugin(ScrollSmoother);
   ScrollSmoother.create({
-    content: '#gallery',
-    smooth: 1.2
+    effects: true,
+    smooth: 1.6,
+    content: '#gallery'
   })
+  // ScrollSmoother.create({
+  //   effects: true,
+  //   smooth: 1.6,
+  //   content: '#mini-gallery'
+  // })
 }
 onMounted(async () => {
+  gsap.registerPlugin(ScrollSmoother);
   // setOverflow(true)
   onDockingImages()
   setImageSize()
-  // initScroll()
+  initScroll()
 })
 
 const { width } = useWindowSize()
@@ -80,21 +85,6 @@ const setImageSize = () => {
   else minWidth.value = imageSize
 }
 
-const refProcess = ref()
-watch(processPercent, (value) => {
-  if (value > 90) {
-    setOverflow()
-    gsap.to(refProcess.value, {
-      opacity: 0,
-      duration: 0.7
-    })
-    gsap.to(refProcess.value, {
-      display: 'none',
-      duration: 0.7,
-      delay: 0.3,
-    })
-  }
-})
 watch(() => route.query.index, (value) => {
   setOverflow(!!value?.toString())
 })
