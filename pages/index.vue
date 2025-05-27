@@ -66,7 +66,7 @@ onMounted(async () => {
   // setOverflow(true)
   onDockingImages()
   setImageSize()
-  initScroll()
+  // initScroll()
 })
 
 const { width } = useWindowSize()
