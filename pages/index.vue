@@ -5,7 +5,7 @@ import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
 const { app } = useAppConfig()
-// const { gtag } = useGtag()
+const { gtag } = useGtag()
 const route = useRoute()
 const store = useStore()
 const { isFocusing } = storeToRefs(store)
