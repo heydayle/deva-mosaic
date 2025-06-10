@@ -7,19 +7,17 @@
           class="bg-white p-4 overflow-visible"
           :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"
       >
-        <div v-show="isBackHover" class="mt-12 -ml-6">
+        <div v-show="isBackHover" class="-mt-1 -ml-3">
           <div class="inline-flex items-center space-x-4 text-4xl whitespace-nowrap">
             <UIcon
               name="ic:outline-arrow-back-ios"
               :size="width < 768 ? 16 : 24"
               class="close-button text-white-50 transition duration-300 group-hover:bg-white group-hover:text-black -mt-2"
             />
-            <span>{{ $t('previous') }}</span>
           </div>
         </div>
-        <div v-show="isNextHover" class="mt-12 -ml-6">
+        <div v-show="isNextHover" class="-mt-3 -ml-3">
           <div class="inline-flex items-center space-x-4 text-4xl whitespace-nowrap">
-            <span>{{ $t('next') }}</span>
             <UIcon
               name="ic:outline-arrow-forward-ios"
               :size="width < 768 ? 16 : 24"
@@ -37,7 +35,7 @@
   
   <script setup>
   
-  import { useMouse, watchOnce, useWindowSize, useScroll, useElementBounding } from "@vueuse/core";
+  import { useMouse, watchOnce, useWindowSize, useElementBounding } from "@vueuse/core";
   import { gsap } from "gsap";
 
   const refCursor = ref()
@@ -332,8 +330,8 @@
     top: 0;
     left: 0;
     mix-blend-mode: difference;
-    backdrop-filter: grayscale(1);
-    -webkit-backdrop-filter: grayscale(1);
+    backdrop-filter: grayscale(2);
+    -webkit-backdrop-filter: grayscale(2);
     pointer-events: none;
     opacity: 1;
     transition: opacity 0.3s ease-in-out;

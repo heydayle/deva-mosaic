@@ -2,8 +2,8 @@
 </script>
 
 <template>
-  <div class="m-auto">
-    <LayoutsHeader />
+  <div class="scroll-smooth-content m-auto">
+    <!-- <LayoutsHeader /> -->
     <NuxtPage />
   </div>
 </template>

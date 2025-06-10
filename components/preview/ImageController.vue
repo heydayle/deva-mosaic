@@ -159,9 +159,18 @@ const { stop } = useIntersectionObserver(
             <div class="fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 flex flex-col items-center space-y-4">
               <NuxtLinkLocale
                 to="/"
-                class="cursor-none mouse-object !text-white-50 text-4xl group"
+                class="cursor-none !text-white-50 text-4xl group"
+                title="Close Preview"
               >
-                {{ $t('close') }}
+                <UIcon name="flowbite:close-outline" class="cursor-none close-button" />
+              </NuxtLinkLocale>
+              <NuxtLinkLocale
+                :to="currentImageFocusing.preview"
+                target="_blank"
+                class="cursor-none !text-white-50 text-4xl group"
+                title="Download Image"
+              >
+                <UIcon name="ph:download-simple" class="cursor-none close-button" />
               </NuxtLinkLocale>
               <NBColorMode />
             </div>

@@ -56,9 +56,9 @@ const setOverflow = (hidden?: boolean) => {
 }
 const initScroll = () => {
   ScrollSmoother.create({
-    effects: true,
-    smooth: 1.6,
-    content: '#gallery'
+    effects: false,
+    smooth: 1.2,
+    content: '#main-layout'
   })
   // ScrollSmoother.create({
   //   effects: true,
@@ -110,7 +110,7 @@ const onBackToTop = () => {
 }
 </script>
 <template>
-  <div>
+  <div class="relative">
     <Teleport to="#back-to-top">
       <NBScrollToTop v-if="y > 300" @click="onBackToTop" />
     </Teleport>
@@ -127,6 +127,7 @@ const onBackToTop = () => {
       </UProgress>
     </div> -->
     <div id="gallery" ref="refGallery" class="container py-4 relative">
+      <!-- <LayoutsHeader /> -->
       <StackGrid ref="stackGridRef" :items="images" :column-min-width="minWidth" :gutter-width="20" :gutter-height="20"
         class="gallery">
         <template #item="{ item }">
