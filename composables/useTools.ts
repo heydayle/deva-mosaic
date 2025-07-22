@@ -58,6 +58,9 @@ export interface SimpleImage {
     fileId: string
     preview: string
     srcLoading: string
+    img: string
+    url: string
+    height?: number
   }
 export const useTools = () => {
   const convertFileIdEncodeURL = (url: string) => {
@@ -68,8 +71,16 @@ export const useTools = () => {
   const getImageLink = (fileId: string, blockId: string, width: number = 500, format: string = 'webp'): string => {
     return `https://www.notion.so/image/${fileId}?table=block&id=${blockId}&format=${format}&width=${width}`
   }
+  const getImageHeight = (url: string): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => resolve(img.height);
+    img.onerror = () => reject('Không tải được ảnh');
+  });
+}
   function convertNotionPagesToImageList(notionPages: NotionPage[]): SimpleImage[] {
-      return notionPages.map((page: NotionPage) => {
+      return notionPages.map((page: NotionPage, index: number) => {
         const result: SimpleImage = {
           id: page.id,
           src: "",
@@ -77,7 +88,10 @@ export const useTools = () => {
           name: "",
           fileId: "",
           preview: "",
-          srcLoading: ""
+          srcLoading: "",
+          img: "",
+          url: "",
+          // height: 800,
         };
 
         const fileProperty = page.properties.file;
@@ -87,9 +101,11 @@ export const useTools = () => {
           if (file.type === "file" && file.file && file.file.url) {
             const fileId = convertFileIdEncodeURL(file.file.url);
             result.srcLoading = getImageLink(fileId, page.id, 1)
-            result.src = getImageLink(fileId, page.id, 560)
+            result.src = getImageLink(fileId, page.id, 360)
             result.preview = getImageLink(fileId, page.id, 8000)
             result.fileId = fileId
+            result.img = getImageLink(fileId, page.id, 560)
+            result.url = '?index=' + index
           } else if (file.type === "external" && file.external && file.external.url) {
 
             result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
@@ -115,6 +131,7 @@ export const useTools = () => {
     }
 
       return {
+        getImageHeight,
         getImageLink,
         convertNotionPagesToImageList
       }

@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import StackGrid from '@crob/vue-stack-grid';
-// import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
-import { useWindowSize, useIntersectionObserver, useWindowScroll } from "@vueuse/core";
+import { useIntersectionObserver, useWindowScroll } from "@vueuse/core";
 
 const route = useRoute()
-const store = useStore()
-const { isFocusing } = storeToRefs(store)
 const { currentImages, currentCursor } = storeToRefs(useImageStore())
 
 const { $gsap: gsap } = useNuxtApp();
@@ -15,38 +11,35 @@ definePageMeta({
   name: 'Home'
 });
 
+const { getImageHeight } = useTools()
 const { notionGetImages, notionGetMoreImages } = useNotion()
 await notionGetImages()
 
-const images = computed(() => currentImages.value || [])
+const images = ref<SimpleImage[]>([])
+const isLoaded = computed(() => !!images.value.length)
 
-const MODES = {
-  FOCUS: true,
-  VIEW: false
+const setImagesHeight = async () => {
+  const items = []
+  for (const image of currentImages.value) {
+    if (image.height) {
+      items.push({ ...image, height: image.height });
+      continue;
+    }
+    const height = await getImageHeight(image.src)
+    items.push({ ...image, height: height });
+  }
+  images.value = items;
 }
-const itemHover = ref()
-const mode = computed(() => isFocusing.value)
+
+onMounted(() => {
+  setImagesHeight()
+})
 
 const stackGridRef = ref()
 const refGallery = ref()
-const count = ref(0)
 
-const imageIsReady = () => {
-  if (count.value < images.value.length) {
-    stackGridRef.value.reflow()
-    count.value++
-    if (processPercent.value > 90) {
-      stackGridRef.value.reflow()
-    }
-  }
-}
-const processPercent = computed(() => Math.round((count.value / images.value.length) * 100))
 const isReady = computed(() => !!images.value.length)
 
-const onDockingImages = () => {
-  gsap.set('.image-item', { opacity: 1 })
-  gsap.timeline().from('.image-item', { opacity: 0, ease: 'back' })
-}
 const setOverflow = (hidden?: boolean) => {
   const HTMLElement = document.querySelector('html')
 
@@ -60,30 +53,11 @@ const initScroll = () => {
     smooth: 1.2,
     content: '#main-layout'
   })
-  // ScrollSmoother.create({
-  //   effects: true,
-  //   smooth: 1.6,
-  //   content: '#mini-gallery'
-  // })
 }
 onMounted(async () => {
   gsap.registerPlugin(ScrollSmoother);
-  // setOverflow(true)
-  onDockingImages()
-  setImageSize()
   initScroll()
 })
-
-const { width } = useWindowSize()
-const minWidth = ref(240)
-
-const setImageSize = () => {
-  const containerWidth = document.querySelector('.container')?.clientWidth
-  const imageSize = containerWidth && Math.round(containerWidth / 5.5) || 200
-  if (width.value < 500 && containerWidth)
-    minWidth.value = width.value - (width.value - containerWidth)
-  else minWidth.value = imageSize
-}
 
 watch(() => route.query.index, (value) => {
   setOverflow(!!value?.toString())
@@ -98,6 +72,7 @@ const { stop } = useIntersectionObserver(
     if (entry?.isIntersecting && currentCursor.value) {
       isLoadmore.value = true
       await notionGetMoreImages(currentCursor.value)
+      await setImagesHeight()
       stackGridRef.value.reflow()
       isLoadmore.value = false
     }
@@ -114,36 +89,23 @@ const onBackToTop = () => {
     <Teleport to="#back-to-top">
       <NBScrollToTop v-if="y > 300" @click="onBackToTop" />
     </Teleport>
-    <!-- <div ref="refProcess"
-      class="fixed top-0 left-0 z-[99999] w-screen h-screen flex items-center px-20 bg-black/50 backdrop-blur-3xl">
-      <UProgress class="m-auto" :value="processPercent" size="2xs" indicator>
-        <template #indicator="{ percent }">
-          <div class="text-center w-full">
-            <span class="inline-flex text-primary-500 items-center">
-              <UIcon name="line-md:downloading-loop" class="mr-2" size="24" /> {{ percent < 5 ? 'Initializing...' :
-                percent < 20 ? ' Getting...' : percent < 60 ? ' Arranging...' : ' Loading...' }} </span>
-          </div>
-        </template>
-      </UProgress>
-    </div> -->
-    <div id="gallery" ref="refGallery" class="container py-4 relative">
-      <!-- <LayoutsHeader /> -->
-      <StackGrid ref="stackGridRef" :items="images" :column-min-width="minWidth" :gutter-width="20" :gutter-height="20"
-        class="gallery">
-        <template #item="{ item }">
-          <NuxtLinkLocale :to="{ path: '/', query: { index: item.index } }">
-            <NuxtImg :src="item.src" :class="[
-              { 'not-focus': itemHover !== item.id && itemHover && mode === MODES.FOCUS },
-              { 'hover:rounded-md': mode === MODES.FOCUS }]"
-              class="mouse-object image-item transition duration-300 block cursor-none" alt="img" loading="lazy"
-              @mouseenter="itemHover = item.id" @mouseleave="itemHover = ''" @load="imageIsReady" />
-          </NuxtLinkLocale>
-        </template>
-      </StackGrid>
-      <div v-if="isReady" ref="refLoadmore" />
-      <div class="mt-4 text-center">
-        <UIcon v-show="isLoadmore" size="48" name="line-md:downloading-loop" />
-      </div>
+    <div v-if="isLoaded" id="gallery" ref="refGallery" class="container py-4 relative">
+      <ClientOnly>
+        <VueBitsMasonry
+          :items="images"
+          :duration="0.6"
+          :stagger="0.05"
+          animate-from="bottom"
+          :scale-on-hover="true"
+          :hover-scale="0.95"
+          :blur-to-focus="true"
+          :color-shift-on-hover="false"
+        />
+        <div v-if="isReady" ref="refLoadmore" />
+        <!-- <div class="mt-4 text-center">
+          <UIcon v-show="isLoadmore" size="48" name="line-md:downloading-loop" />
+        </div> -->
+      </ClientOnly>
       <PreviewImageController v-if="isReady" :currentCursor="currentCursor" />
     </div>
   </div>

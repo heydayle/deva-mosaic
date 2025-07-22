@@ -64,7 +64,7 @@ export const useNotion = () => {
         const resResults = response?.data.value?.results || []
         results.value = [...results.value, ...resResults]
         indexImage.value = allImages.value.length
-        const images = convertNotionPagesToImageList(resResults)
+        const images = await convertNotionPagesToImageList(resResults)
             .filter(item => item.src)
             .map((item, index) => ({ ...item, index: (indexImage.value + index) })) || []
         allImages.value = [...allImages.value, ...images]

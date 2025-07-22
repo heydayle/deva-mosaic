@@ -53,7 +53,7 @@ onMounted(() => {
         <SelectLanguage />
       </div>
     </div>
-    <div ref="refWarning" class="fixed top-1/2 transfrom -translate-y-1/2 p-4 z-[999999] opacity-0 bg-white-50/50 dark:bg-black/90 h-dvh">
+    <!-- <div ref="refWarning" class="fixed top-1/2 transfrom -translate-y-1/2 p-4 z-[999999] opacity-0 bg-white-50/50 dark:bg-black/90 h-dvh">
       <div class="flex flex-col justify-between w-full rounded-xl overflow-hidden backdrop-blur-2xl px-4 py-8 text-black dark:text-white-50 mx-auto h-dvh">
         <div>
           <NuxtImg src="logo.svg" width="60" />
@@ -61,6 +61,6 @@ onMounted(() => {
         </div>
         <span class="text-[40px] ring ring-white-50 text-center" @click="closeWarning">no problem.</span>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>

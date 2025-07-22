@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@crob/vue-stack-grid':
-        specifier: ^1.0.9
-        version: 1.0.9(vue@3.5.13(typescript@5.8.2))
       '@nuxt/fonts':
         specifier: ^0.10.3
         version: 0.10.3(db0@0.2.4)(ioredis@5.5.0)(magicast@0.3.5)(vite@6.1.0(@types/node@22.13.1)(jiti@2.4.2)(sass@1.85.1)(terser@5.38.2)(yaml@2.7.0))
@@ -77,9 +74,6 @@ importers:
       vue:
         specifier: latest
         version: 3.5.13(typescript@5.8.2)
-      vue-masonry-css:
-        specifier: ^1.0.3
-        version: 1.0.3
       vue-router:
         specifier: latest
         version: 4.5.0(vue@3.5.13(typescript@5.8.2))
@@ -283,11 +277,6 @@ packages:
   '@cloudflare/kv-asset-handler@0.3.4':
     resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
     engines: {node: '>=16.13'}
-
-  '@crob/vue-stack-grid@1.0.9':
-    resolution: {integrity: sha512-sDJuB0QOmIp2lmstHn5fjfk2YCr7cfnPt4H8Yj3mAzerVQ6dV/BaPBDYaIEZGJsT8USem1hPKYB/xH568ygl+A==}
-    peerDependencies:
-      vue: ^3.0.0
 
   '@csstools/selector-resolve-nested@3.0.0':
     resolution: {integrity: sha512-ZoK24Yku6VJU1gS79a5PFmC8yn3wIapiKmPgun0hZgEI5AOqgH2kiPRsPz1qkGv4HL+wuDLH83yQyk6inMYrJQ==}
@@ -5782,9 +5771,6 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
-  vue-masonry-css@1.0.3:
-    resolution: {integrity: sha512-viecHQiHVLez7HlYUQsv1wJb2MT/RDSzkDp6m3In41vPrk6OsBmT2qRE8LZqYIA4daIwrnx/Xm8h4fjOpuE3hw==}
-
   vue-router@4.5.0:
     resolution: {integrity: sha512-HDuk+PuH5monfNuY+ct49mNmkCRK4xJAV9Ts4z9UFc4rzdDnxQLyCMGGc8pKhZhHTVzfanpNwB/lwqevcBwI4w==}
     peerDependencies:
@@ -6189,10 +6175,6 @@ snapshots:
   '@cloudflare/kv-asset-handler@0.3.4':
     dependencies:
       mime: 3.0.0
-
-  '@crob/vue-stack-grid@1.0.9(vue@3.5.13(typescript@5.8.2))':
-    dependencies:
-      vue: 3.5.13(typescript@5.8.2)
 
   '@csstools/selector-resolve-nested@3.0.0(postcss-selector-parser@7.1.0)':
     dependencies:
@@ -13211,8 +13193,6 @@ snapshots:
       '@intlify/shared': 9.14.2
       '@vue/devtools-api': 6.6.4
       vue: 3.5.13(typescript@5.8.2)
-
-  vue-masonry-css@1.0.3: {}
 
   vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)):
     dependencies:
