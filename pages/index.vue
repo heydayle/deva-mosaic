@@ -16,20 +16,19 @@ const { notionGetImages, notionGetMoreImages } = useNotion()
 await notionGetImages()
 
 const images = ref<SimpleImage[]>([])
-const isLoaded = computed(() => !!images.value.length)
 
 const setImagesHeight = async () => {
-  const items = []
-  for (const image of currentImages.value) {
-    if (image.height) {
-      items.push({ ...image, height: image.height });
-      continue;
-    }
-    const height = await getImageHeight(image.src)
-    items.push({ ...image, height: height });
-  }
-  images.value = items;
-}
+  const tasks = currentImages.value
+    .filter(image => 
+      !image.height && !images.value.some(img => img.id === image.id)
+    )
+    .map(async image => {
+      const height = await getImageHeight(image.srcLoading);
+      return { ...image, height: height * 6 };
+    });
+  const resolvedImages = await Promise.all(tasks);
+  images.value.push(...resolvedImages);
+};
 
 onMounted(() => {
   setImagesHeight()
@@ -89,7 +88,7 @@ const onBackToTop = () => {
     <Teleport to="#back-to-top">
       <NBScrollToTop v-if="y > 300" @click="onBackToTop" />
     </Teleport>
-    <div v-if="isLoaded" id="gallery" ref="refGallery" class="container py-4 relative">
+    <div id="gallery" ref="refGallery" class="container py-4 relative">
       <ClientOnly>
         <VueBitsMasonry
           :items="images"

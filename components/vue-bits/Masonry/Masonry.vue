@@ -12,11 +12,21 @@
     >
       <div
         class="relative w-full h-full bg-cover bg-center rounded-[10px] shadow-[0px_10px_50px_-10px_rgba(0,0,0,0.2)] uppercase text-[10px] leading-[10px]"
-        :style="{ backgroundImage: `url(${item.img})` }"
+       
       >
         <div
           v-if="colorShiftOnHover"
           class="color-overlay absolute inset-0 rounded-[10px] bg-gradient-to-tr from-pink-500/50 to-sky-500/50 opacity-0 pointer-events-none"
+        />
+        <NuxtImg
+          v-if="!isCurrentLoaded?.[item.id]"
+          :src="item.srcLoading"
+          class="absolute inset-0 w-full h-full object-cover rounded-[10px] filter blur-[10px]"
+        />
+        <NuxtImg
+          :src="item.src"
+          class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
+          @load="currentImageLoaded(item.id)"
         />
       </div>
     </div>
@@ -75,7 +85,7 @@ const useMedia = (queries: string[], values: number[], defaultValue: number) => 
 
 const useMeasure = () => {
   const containerRef = useTemplateRef<HTMLDivElement>('containerRef');
-  const size = ref({ width: 0, height: 0 });
+  const size = ref({ width: 0, height: 400 });
   let resizeObserver: ResizeObserver | null = null;
 
   onMounted(() => {
@@ -207,6 +217,11 @@ const handleMouseLeave = (id: string, element: HTMLElement) => {
     const overlay = element.querySelector('.color-overlay') as HTMLElement;
     if (overlay) gsap.to(overlay, { opacity: 0, duration: 0.3 });
   }
+};
+
+const isCurrentLoaded = ref({} as Record<string, boolean>);
+const currentImageLoaded = (id: string) => {
+  isCurrentLoaded.value[id] = true;
 };
 
 watchEffect(() => {
