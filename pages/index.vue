@@ -16,6 +16,7 @@ const { notionGetImages, notionGetMoreImages } = useNotion()
 await notionGetImages()
 
 const images = ref<SimpleImage[]>([])
+const isFirstLoad = ref(true)
 
 const setImagesHeight = async () => {
   const tasks = currentImages.value
@@ -24,10 +25,11 @@ const setImagesHeight = async () => {
     )
     .map(async image => {
       const height = await getImageHeight(image.srcLoading);
-      return { ...image, height: height * 6 };
+      return { ...image, height: height * 4 };
     });
   const resolvedImages = await Promise.all(tasks);
   images.value.push(...resolvedImages);
+  isFirstLoad.value = false;
 };
 
 onMounted(() => {
@@ -88,6 +90,9 @@ const onBackToTop = () => {
     <Teleport to="#back-to-top">
       <NBScrollToTop v-if="y > 300" @click="onBackToTop" />
     </Teleport>
+    <div v-if="isFirstLoad" class="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-black">
+      <UIcon name="line-md:loading-loop" size="48" class="animate-spin text-gray-500 dark:text-gray-400" />
+    </div>
     <div id="gallery" ref="refGallery" class="container py-4 relative">
       <ClientOnly>
         <VueBitsMasonry
