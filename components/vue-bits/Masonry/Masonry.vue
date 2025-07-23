@@ -25,6 +25,8 @@
         <NuxtImg
           :src="item.src"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
+          loading="lazy"
+          quality="80"
           @load="currentImageLoaded(item.id)"
         />
       </div>
