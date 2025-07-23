@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     'nuxt-gtag'
   ],
   routeRules: {
-    // '/': { prerender: true }
+    '/': { prerender: true, cache: { maxAge: 60 * 60 * 60 } }
   },
   colorMode: {
     preference: 'dark',
