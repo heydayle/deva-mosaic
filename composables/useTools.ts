@@ -105,7 +105,7 @@ export const useTools = () => {
             result.preview = getImageLink(fileId, page.id, 4000)
             result.fileId = fileId
             result.img = getImageLink(fileId, page.id, 560)
-            result.url = '?index=' + index - 1
+            result.url = `?index=${index - 1}`
           } else if (file.type === "external" && file.external && file.external.url) {
 
             result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
