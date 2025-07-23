@@ -101,8 +101,8 @@ export const useTools = () => {
           if (file.type === "file" && file.file && file.file.url) {
             const fileId = convertFileIdEncodeURL(file.file.url);
             result.srcLoading = getImageLink(fileId, page.id, 1)
-            result.src = getImageLink(fileId, page.id, 360)
-            result.preview = getImageLink(fileId, page.id, 8000)
+            result.src = getImageLink(fileId, page.id, 240)
+            result.preview = getImageLink(fileId, page.id, 4000)
             result.fileId = fileId
             result.img = getImageLink(fileId, page.id, 560)
             result.url = '?index=' + index
