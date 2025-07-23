@@ -33,10 +33,19 @@ export default defineNuxtConfig({
     id: process.env.GG_GTAG_KEY || 'G-xxxxxxxx',
   },
   image: {
-    // provider: 'ipx',
-    // domains: ['prod-files-secure.s3.us-west-2.amazonaws.com'],
-    // alias: {
-    //   imgs: 'https://prod-files-secure.s3.us-west-2.amazonaws.com',
+    providers: {
+      notion: {
+        name: 'notion',
+        provider: '~/providers/notion.ts',
+        options: {
+          baseURL: 'https://www.notion.so',
+        }
+      }
+    },
+    domains: ['www.notion.so', 'notion.so']
+    // provider: 'notion',
+    // notion: {
+    //   baseURL: 'https://www.notion.so',
     // },
   },
   vite: {
@@ -92,3 +101,4 @@ export default defineNuxtConfig({
     transpile: ['gsap'],
   },
 })
+

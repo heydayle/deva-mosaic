@@ -71,9 +71,10 @@ const currentImageLoaded = () => {
     opacity: 0,
   });
 };
-
+const countReady = ref(0);
 const imageIsReady = (visibility: string) => {
-  if (visibility === "visible") {
+  if (visibility === "visible" && countReady.value < currentIndex.value) {
+    countReady.value++;
     scrollToImage(currentIndex.value);
   }
 };
@@ -145,12 +146,15 @@ const { stop } = useIntersectionObserver(
             <NuxtImg
               v-if="!isCurrentLoaded"
               ref="refImageAnimate"
+              provider="notion"
+              quality="10"
               :src="currentImageFocusing.srcLoading"
               class="m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
             />
             <NuxtImg
               v-show="isCurrentLoaded"
               :src="currentImageFocusing.preview"
+              provider="notion"
               class="m-auto rounded-xl max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)]"
               @load="currentImageLoaded"
             />
@@ -159,18 +163,18 @@ const { stop } = useIntersectionObserver(
             <div class="fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 flex flex-col items-center space-y-4">
               <NuxtLinkLocale
                 to="/"
-                class="cursor-none !text-white-50 text-4xl group"
+                class="!text-white-50 text-4xl group"
                 title="Close Preview"
               >
-                <UIcon name="flowbite:close-outline" class="cursor-none close-button" />
+                <UIcon name="flowbite:close-outline" class="cursor-target close-button" />
               </NuxtLinkLocale>
               <NuxtLinkLocale
                 :to="currentImageFocusing.preview"
                 target="_blank"
-                class="cursor-none !text-white-50 text-4xl group"
+                class="!text-white-50 text-4xl group"
                 title="Download Image"
               >
-                <UIcon name="ph:download-simple" class="cursor-none close-button" />
+                <UIcon name="ph:download-simple" class="cursor-target close-button" />
               </NuxtLinkLocale>
               <NBColorMode />
             </div>
@@ -196,23 +200,25 @@ const { stop } = useIntersectionObserver(
      <div
         id="mini-gallery"
         ref="refMiniGallery"
-        class="mini-gallery fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[260px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
+        class="mini-gallery fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[220px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
       >
         <div
           class="mini-gallery flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
         >
-          <div v-for="(item, index) in images" :key="index" class="xs:w-[50px] md:w-[200px]">
+          <div v-for="(item, index) in images" :key="index" class="xs:w-[50px] md:w-[128px]">
               <NuxtLinkLocale
                 :to="{ path: '/', query: { index } }"
-                class="w-[50px] md:!w-[200px] block"
+                class="w-[50px] md:!w-[128px] block"
               >
                 <UseDocumentVisibility v-slot="{ visibility }">
                     <NuxtImg
                       :id="'index-' + index"
-                      :src="item.src"
+                      :src="item.img"
                       :class="{ 'filter saturate-[0]': parseInt(route.query.index as string) === index }"
                       class="mouse-object image-item cursor-none transition duration-300 block duration-600"
+                      width="50 md:128"
                       alt="img"
+                      loading="lazy"
                       @load="imageIsReady(visibility)"
                     />
                 </UseDocumentVisibility>

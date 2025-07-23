@@ -1,5 +1,5 @@
 <template>
-  <div ref="containerRef" class="relative w-full h-full">
+  <div ref="containerRef" class="relative w-full h-full masonry-container">
     <div
       v-for="item in grid"
       :key="item.id"
@@ -11,7 +11,7 @@
       @mouseleave="e => handleMouseLeave(item.id, e.currentTarget as HTMLElement)"
     >
       <div
-        class="relative w-full h-full bg-cover bg-center rounded-[10px] shadow-[0px_10px_50px_-10px_rgba(0,0,0,0.2)] uppercase text-[10px] leading-[10px]"
+        class="cursor-target relative w-full h-full bg-cover bg-center rounded-[10px] shadow-[0px_10px_50px_-10px_rgba(0,0,0,0.2)] uppercase text-[10px] leading-[10px]"
       >
         <div
           v-if="colorShiftOnHover"
@@ -19,11 +19,13 @@
         />
         <NuxtImg
           v-if="!isCurrentLoaded?.[item.id]"
+          provider="notion"
           :src="item.srcLoading"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px] filter blur-[10px]"
         />
         <NuxtImg
           :src="item.src"
+          provider="notion"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
           loading="lazy"
           quality="80"
@@ -278,7 +280,7 @@ watchEffect(() => {
     });
 
     hasMounted.value = true;
-    document.querySelector('#gallery')?.setAttribute('style', `height: ${heightEl.value}px`);
+    document.querySelector('.masonry-container')?.setAttribute('style', `height: ${heightEl.value}px`);
   });
 });
 </script>

@@ -32,13 +32,7 @@ const setImagesHeight = async () => {
   isFirstLoad.value = false;
 };
 
-onMounted(() => {
-  setImagesHeight()
-})
-
-const stackGridRef = ref()
 const refGallery = ref()
-
 const isReady = computed(() => !!images.value.length)
 
 const setOverflow = (hidden?: boolean) => {
@@ -58,6 +52,7 @@ const initScroll = () => {
 onMounted(async () => {
   gsap.registerPlugin(ScrollSmoother);
   initScroll()
+  setImagesHeight()
 })
 
 watch(() => route.query.index, (value) => {
@@ -70,11 +65,12 @@ const isLoadmore = ref(false)
 const { stop } = useIntersectionObserver(
   refLoadmore,
   async ([entry]) => {
+    console.log(currentCursor.value);
+    
     if (entry?.isIntersecting && currentCursor.value) {
       isLoadmore.value = true
       await notionGetMoreImages(currentCursor.value)
       await setImagesHeight()
-      stackGridRef.value.reflow()
       isLoadmore.value = false
     }
   },
@@ -84,15 +80,13 @@ const { y } = useWindowScroll({ behavior: 'smooth' })
 const onBackToTop = () => {
   y.value = 0
 }
+
 </script>
 <template>
   <div class="relative">
     <Teleport to="#back-to-top">
       <NBScrollToTop v-if="y > 300" @click="onBackToTop" />
     </Teleport>
-    <div v-if="isFirstLoad" class="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-black">
-      <UIcon name="line-md:loading-loop" size="48" class="animate-spin text-gray-500 dark:text-gray-400" />
-    </div>
     <div id="gallery" ref="refGallery" class="container py-4 relative">
       <ClientOnly>
         <VueBitsMasonry
@@ -106,9 +100,9 @@ const onBackToTop = () => {
           :color-shift-on-hover="false"
         />
         <div v-if="isReady" ref="refLoadmore" />
-        <!-- <div class="mt-4 text-center">
-          <UIcon v-show="isLoadmore" size="48" name="line-md:downloading-loop" />
-        </div> -->
+        <div class="mt-4 text-center">
+          <UIcon v-show="isLoadmore" name="line-md:loading-loop" size="48" class="animate-spin text-gray-500 dark:text-gray-400" />
+        </div>
       </ClientOnly>
       <PreviewImageController v-if="isReady" :currentCursor="currentCursor" />
     </div>

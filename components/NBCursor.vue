@@ -5,7 +5,7 @@
           ref="refCursor"
           :class="cursorClasses"
           class="bg-white p-4 overflow-visible"
-          :style="{ transform: 'translate(' + Math.round((outputX - (size/2))) + 'px, ' + Math.round((outputY - (size/2)) + 1) + 'px)', width: size + 'px', height: size + 'px' }"
+          :style="{ transform: 'translate(' + Math.round((outputX - 17)) + 'px, ' + Math.round(outputY - 17) + 'px)', width: size + 'px', height: size + 'px' }"
       >
         <div v-show="isBackHover" class="-mt-1 -ml-3">
           <div class="inline-flex items-center space-x-4 text-4xl whitespace-nowrap">
@@ -26,38 +26,20 @@
           </div>
         </div>
       </div>
-      <div v-if="width > 767" ref="refBackPoint" class="back-object" :class="{ 'z-[99999]': isViewer }"/>
-      <!--<div v-if="!isViewer && width > 767" ref="refClickToView" class="fixed top-4 left-4 z-[99999] text-6xl bg-black/30 mix-blend-difference pointer-events-none opacity-0">
-        click to view!
-      </div>-->
   </div>
   </template>
   
   <script setup>
   
-  import { useMouse, watchOnce, useWindowSize, useElementBounding } from "@vueuse/core";
+  import { useMouse, watchOnce, useWindowSize } from "@vueuse/core";
   import { gsap } from "gsap";
 
   const refCursor = ref()
   const currentActiveObject = ref()
   const refBackPoint = ref()
-  const refClickToView = ref()
   const refSelectPoint = ref()
   const colorMode = useColorMode()
   const { width } = useWindowSize()
-
-  
-  const { x: xBack, y: yBack, bottom: bottomBack } = useElementBounding(refBackPoint)
-
-  watch(xBack, (value) => {
-    if (currentActiveObject.value)
-      gsap.to(refClickToView.value, {
-        opacity: 1,
-        x: value,
-        y: yBack.value < 20 ? bottomBack.value - 80 : yBack.value
-      })
-  })
-
 
   const isNextHover = ref(false)
   const isBackHover = ref(false)
@@ -164,10 +146,6 @@
           opacity: 1,
           duration: 0.5,
         })
-        gsap.to(refClickToView.value, {
-          opacity: 0,
-          duration: 0.2,
-        })
       }
       if (!event?.target.classList || !event?.target.classList.contains("mouse-object") && !event.target.classList.contains("gallery")) {
         currentActiveObject.value = null;
@@ -187,12 +165,6 @@
           width: rect.width + 30,
           height: rect.height + 30,
           duration: 0.6,
-        })
-        gsap.to(refClickToView.value, {
-          opacity: 1,
-          x: rect.x,
-          y: rect.y < 20 ? rect.bottom - 80 : rect.y,
-          duration: 0.7
         })
       }
     });
@@ -264,10 +236,10 @@
   
   onMounted(() => {
     setupMouseEffect('mouse-lg', 200);
-    setupMouseEffect('mouse-md', 100);
-    setupMouseEffect('mouse-sm', 60);
-    setupMouseEffect('mouse-object', 20);
-    setupMouseEffect('close-button', 60);
+    // setupMouseEffect('mouse-md', 100);
+    // setupMouseEffect('mouse-sm', 60);
+    // setupMouseEffect('mouse-object', 20);
+    // setupMouseEffect('close-button', 60);
   });
   
   // Reset the cursor size when the route changes

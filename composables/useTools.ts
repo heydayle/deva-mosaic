@@ -104,7 +104,7 @@ export const useTools = () => {
             result.src = getImageLink(fileId, page.id, 240)
             result.preview = getImageLink(fileId, page.id, 4000)
             result.fileId = fileId
-            result.img = getImageLink(fileId, page.id, 560)
+            result.img = getImageLink(fileId, page.id, 128)
             result.url = `?index=${index - 1}`
           } else if (file.type === "external" && file.external && file.external.url) {
 
