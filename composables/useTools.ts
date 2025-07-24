@@ -63,6 +63,8 @@ export interface SimpleImage {
     height?: number
   }
 export const useTools = () => {
+  const imageStore = useImageStore()
+  const imagesLength = computed(() => imageStore.currentImages.length || 0)
   const convertFileIdEncodeURL = (url: string) => {
     const parsedUrl = new URL(url);
     const extractedPath = parsedUrl.pathname.split('/').slice(2).join(':')
@@ -80,8 +82,6 @@ export const useTools = () => {
   });
 }
   function convertNotionPagesToImageList(notionPages: NotionPage[]): SimpleImage[] {
-      const imageStore = useImageStore()
-      const imagesLength = imageStore.currentImages.value.length || 0
       return notionPages.map((page: NotionPage, index: number) => {
         const result: SimpleImage = {
           id: page.id,
@@ -107,7 +107,7 @@ export const useTools = () => {
             result.preview = getImageLink(fileId, page.id, 4000)
             result.fileId = fileId
             result.img = getImageLink(fileId, page.id, 128)
-            result.url = `?index=${imagesLength + index}`
+            result.url = `?index=${imagesLength.value + index}`
           } else if (file.type === "external" && file.external && file.external.url) {
 
             result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
