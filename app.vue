@@ -67,6 +67,9 @@ useHead({
       <NBFocusMode />
       <div id="back-to-top" />
     </div>
+    <client-only>
+      <TargetCursor :spin-duration="0" :hide-default-cursor="true" />
+    </client-only>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
