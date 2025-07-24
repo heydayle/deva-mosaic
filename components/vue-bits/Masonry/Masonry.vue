@@ -26,6 +26,7 @@
         <NuxtImg
           :src="item.src"
           :alt="item.id"
+          preload
           provider="notion"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
           quality="80"
@@ -36,11 +37,12 @@
           <img
             v-if="isLoaded"
             v-bind="imgAttrs"
-            fetchpriority="high"
+            fetchPriority="high"
             :src="src"
           >
           <img
             v-else
+            preload
             :src="item.srcLoading"
             alt="placeholder"
             class="w-full h-full object-cover rounded-[10px]"
