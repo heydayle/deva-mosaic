@@ -25,9 +25,10 @@
         />
         <NuxtImg
           :src="item.src"
+          :alt="item.id"
           provider="notion"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
-          fetchPriority="high"
+          fetchpriority="high"
           quality="80"
           @load="currentImageLoaded(item.id)"
         />
