@@ -28,20 +28,20 @@
           :alt="item.id"
           preload
           provider="notion"
-          class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
+          class="absolute inset-0 w-full h-full object-cover rounded-[10px] transition duration-300"
           quality="80"
           @load="currentImageLoaded(item.id)"
           :custom="true"
           v-slot="{ src, isLoaded, imgAttrs }"
         >
           <img
-            v-if="isLoaded"
+            v-show="isLoaded"
             v-bind="imgAttrs"
             fetchPriority="high"
             :src="src"
           >
           <img
-            v-else
+            v-show="!isLoaded"
             preload
             :src="item.srcLoading"
             alt="placeholder"

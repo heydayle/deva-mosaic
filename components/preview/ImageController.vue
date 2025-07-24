@@ -1,42 +1,27 @@
 <script setup lang="ts">
-import { gsap } from "gsap";
-import { useWindowSize, useScroll, useIntersectionObserver } from "@vueuse/core"
+import { useWindowSize, useIntersectionObserver } from "@vueuse/core"
 import { UseDocumentVisibility } from "@vueuse/components"
 import { useTemplateRef } from 'vue'
 
 const props = defineProps<{
+  images: SimpleImage[]
   currentCursor?: string
+  isLoadingMore?: boolean
+}>()
+const emit = defineEmits<{
+  (e: 'loadMore'): void
 }>()
 
 const route = useRoute();
 const { gtag } = useGtag()
 const { width } = useWindowSize()
-const colorMode = useColorMode()
 
-const { currentImages, currentCursor, isMaxPage } = storeToRefs(useImageStore())
-const { notionGetMoreImages, allImages } = useNotion();
 const isCurrentLoaded = ref(false);
-const isPreviewReady = ref(false)
 
-const images = ref<SimpleImage[]>([])
-onMounted(() => {
-  images.value = currentImages.value
-})
-const currentIndex = computed(() => Number.parseInt(route.query.index));
-watch(currentCursor, (value) => {
-  images.value = currentImages.value
-})
-watch(images, async (value) => {
-  if (route.query.index && value.length - 1 <= currentIndex.value && !isPreviewReady.value && !isMaxPage.value) {
-    await notionGetMoreImages(props.currentCursor);
-    images.value = allImages.value
-  }
-  else {
-    isPreviewReady.value =  true
-  }
-})
+const currentIndex = computed(() => route.query.index ? Number.parseInt(route.query.index as string) : 0);
+const refImages = ref(props.images || []);
 
-const { scrollToImage, onBack, onNext } = useControl(images);
+const { scrollToImage, onBack, onNext } = useControl(refImages);
 defineShortcuts({
   'arrowright': () => onNext(currentIndex.value),
   'arrowdown': () => onNext(currentIndex.value),
@@ -45,14 +30,13 @@ defineShortcuts({
 })
 
 const currentImageFocusing = computed(() => {
-  const index = Number.parseInt(route.query.index as string) as number;
-  return images.value[index];
+  const index = Number.parseInt(route.query.index as string);
+  return props.images[index];
 });
 
 watch(currentIndex, (value) => {
   isCurrentLoaded.value = false;
   if (value.toString()) {
-    setBoundingSelectedObject()
     gtag('event', 'page_view', {
       page_title: `Gallery${route.query.index ?  ' - Image ' + route.query.index : ''}`,
     })
@@ -60,16 +44,20 @@ watch(currentIndex, (value) => {
 });
 
 const isOpen = computed(
-  () => !!route.query.index && isPreviewReady.value && !!currentImageFocusing.value
+  () => !!route.query.index && !!currentImageFocusing.value
 );
-const refImageAnimate = ref();
-
-const currentImageLoaded = () => {
-  isCurrentLoaded.value = true;
-  gsap.to(refImageAnimate.value, {
-    opacity: 0,
-  });
-};
+// const currentImageLoaded = () => {
+//   isCurrentLoaded.value = true;
+//   nextTick(() => {
+//     const element = document.querySelector('#index-' + currentIndex.value);
+//     if (element) {
+//       gsap.to(element, {
+//         position: 'relative',
+//         zIndex: 999,
+//       });
+//     }
+//   });
+// };
 const countReady = ref(0);
 const imageIsReady = (visibility: string) => {
   if (visibility === "visible" && countReady.value < currentIndex.value) {
@@ -77,47 +65,35 @@ const imageIsReady = (visibility: string) => {
     scrollToImage(currentIndex.value);
   }
 };
-const refSelectPoint = useTemplateRef('refSelectPoint')
-const refMiniGallery = useTemplateRef('refMiniGallery')
-const { y } = useScroll(refMiniGallery, { behavior: 'smooth' })
 
-const setBoundingSelectedObject = () => {
-  const index = Number.parseInt(route.query.index as string) as number;
-  const element = document.querySelector('#index-' + index);
-  if (!element) return
-  const rect = element.getBoundingClientRect();
-  gsap.to(element, {
-    position: 'relative',
-    zIndex: 999,
-  })
-  gsap.to(refSelectPoint.value, {
-    x: rect.x - 10,
-    y: rect.y - 10,
-    width: rect.width + 20,
-    height: rect.height + 20,
-    borderWidth: isOpen.value ? 2 : 4,
-    borderColor: colorMode.value === 'dark' ? 'white' : 'black',
-    borderStyle: 'dashed',
-    duration: 0.7,
-  })
-}
-watch(y, () => {
-  if (isOpen.value) {
-    setBoundingSelectedObject()
-  }
-})
+// const setBoundingSelectedObject = () => {
+//   const index = Number.parseInt(route.query.index as string) as number;
+//   const element = document.querySelector('#index-' + index);
+//   if (!element) return
+//   const rect = element.getBoundingClientRect();
+//   gsap.to(element, {
+//     position: 'relative',
+//     zIndex: 999,
+//   })
+//   gsap.to(refSelectPoint.value, {
+//     x: rect.x - 10,
+//     y: rect.y - 10,
+//     width: rect.width + 20,
+//     height: rect.height + 20,
+//     borderWidth: isOpen.value ? 2 : 4,
+//     borderColor: colorMode.value === 'dark' ? 'white' : 'black',
+//     borderStyle: 'dashed',
+//     duration: 0.7,
+//   })
+// }
 
 const refLoadmore = useTemplateRef<HTMLDivElement>('refLoadmore')
-const isLoadmore = ref(false)
 
 const { stop } = useIntersectionObserver(
   refLoadmore,
   async ([entry]) => {
-    if (entry?.isIntersecting && currentCursor.value) {
-      isLoadmore.value = true
-      await notionGetMoreImages(props.currentCursor)
-      images.value = currentImages.value
-      isLoadmore.value = false
+    if (entry?.isIntersecting) {
+      emit('loadMore');
     }
   },
 )
@@ -134,29 +110,32 @@ const { stop } = useIntersectionObserver(
         container: 'flex min-h-[calc(100vh-90px)] md:!min-h-full items-end sm:items-center justify-center text-center'
       }"
     >
-      <Teleport to="#select-cursor">
-        <div ref="refSelectPoint" class="selected-object fixed bg-transparent opacity-100" :class="{ 'z-[9999]': isOpen }" />
-      </Teleport>
       <div v-if="currentImageFocusing" class="grid xs:grid-cols-1 md:grid-cols-[1fr,280px] my-auto p-2 md:p-0">
         <div class="relative w-full">
           <div
             class="relative m-auto md:!h-[calc(100vh-130px)] bg-transparent text-center"
           >
             <NuxtImg
-              v-if="!isCurrentLoaded"
-              ref="refImageAnimate"
-              provider="notion"
-              quality="10"
-              :src="currentImageFocusing.srcLoading"
-              class="m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
-            />
-            <NuxtImg
-              v-show="isCurrentLoaded"
               :src="currentImageFocusing.preview"
               provider="notion"
-              class="m-auto rounded-xl max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)]"
-              @load="currentImageLoaded"
-            />
+              class="m-auto transition duration-300 rounded-xl max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)]"
+              :custom="true"
+              v-slot="{ src, isLoaded, imgAttrs }"
+            >
+              <img
+                v-show="isLoaded"
+                v-bind="imgAttrs"
+                fetchPriority="high"
+                :src="src"
+              >
+              <img
+                v-show="!isLoaded"
+                preload
+                :src="currentImageFocusing.srcLoading"
+                alt="placeholder"
+                class="m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
+              >
+            </NuxtImg>
           </div>
           <div class="cursor-none">
             <div class="fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 flex flex-col items-center space-y-4">
@@ -217,7 +196,6 @@ const { stop } = useIntersectionObserver(
                       class="mouse-object image-item cursor-none transition duration-300 block duration-600"
                       width="50 md:128"
                       alt="img"
-                      loading="lazy"
                       @load="imageIsReady(visibility)"
                     />
                 </UseDocumentVisibility>
@@ -225,7 +203,7 @@ const { stop } = useIntersectionObserver(
               <div v-if="index === images.length - 1" ref="refLoadmore" />
           </div>
           <div class="mt-4 text-center">
-            <UIcon v-show="isLoadmore" size="32" name="line-md:downloading-loop" />
+            <UIcon v-show="isLoadingMore" size="32" name="line-md:downloading-loop" />
           </div>
         </div>
       </div> 
