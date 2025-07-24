@@ -27,7 +27,7 @@
           :src="item.src"
           provider="notion"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
-          loading="lazy"
+          fetchPriority="high"
           quality="80"
           @load="currentImageLoaded(item.id)"
         />
