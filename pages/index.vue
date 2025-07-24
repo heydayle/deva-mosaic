@@ -65,8 +65,6 @@ const isLoadmore = ref(false)
 const { stop } = useIntersectionObserver(
   refLoadmore,
   async ([entry]) => {
-    console.log(currentCursor.value);
-    
     if (entry?.isIntersecting && currentCursor.value) {
       isLoadmore.value = true
       await notionGetMoreImages(currentCursor.value)

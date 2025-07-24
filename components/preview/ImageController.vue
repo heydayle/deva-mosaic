@@ -27,7 +27,6 @@ watch(currentCursor, (value) => {
   images.value = currentImages.value
 })
 watch(images, async (value) => {
-  images.value = currentImages.value
   if (route.query.index && value.length - 1 <= currentIndex.value && !isPreviewReady.value && !isMaxPage.value) {
     await notionGetMoreImages(props.currentCursor);
     images.value = allImages.value
