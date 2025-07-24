@@ -67,11 +67,6 @@ useHead({
       <NBFocusMode />
       <div id="back-to-top" />
     </div>
-    <client-only>
-      <LazyNBCursor/>
-      <TargetCursor  :spin-duration="0" :hide-default-cursor="true" />
-      <div id="select-cursor" />
-    </client-only>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
