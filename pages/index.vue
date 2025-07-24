@@ -25,7 +25,7 @@ const setImagesHeight = async () => {
     )
     .map(async image => {
       const height = await getImageHeight(image.srcLoading);
-      return { ...image, height: height * 4, url: `?index=${index}` };
+      return { ...image, height: height * 4, url: `?index=${image.index}` };
     });
   const resolvedImages = await Promise.all(tasks);
   images.value.push(...resolvedImages);
