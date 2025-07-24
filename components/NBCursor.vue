@@ -4,7 +4,7 @@
           id="cursor-main"
           ref="refCursor"
           :class="cursorClasses"
-          class="bg-white p-4 overflow-visible"
+          class="bg-white p-4 overflow-visible hidden lg:block"
           :style="{ transform: 'translate(' + Math.round((outputX - 17)) + 'px, ' + Math.round(outputY - 17) + 'px)', width: size + 'px', height: size + 'px' }"
       >
         <div v-show="isBackHover" class="-mt-1 -ml-3">
