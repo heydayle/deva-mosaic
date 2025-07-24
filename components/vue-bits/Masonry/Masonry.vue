@@ -43,6 +43,7 @@
             v-else
             :src="item.srcLoading"
             alt="placeholder"
+            class="w-full h-full object-cover rounded-[10px]"
           >
         </NuxtImg>
       </div>
