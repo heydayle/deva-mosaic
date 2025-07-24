@@ -65,6 +65,14 @@ export interface SimpleImage {
 export const useTools = () => {
   const imageStore = useImageStore()
   const imagesLength = computed(() => imageStore.currentImages.length || 0)
+
+  // const isFirstLoaded = computed(() => imageStore.isFirstLoaded)
+  // const counterIndex = computed(() => {
+  //   if (isFirstLoaded.value)
+  //     return imagesLength.value
+  //   return 0
+  // })
+
   const convertFileIdEncodeURL = (url: string) => {
     const parsedUrl = new URL(url);
     const extractedPath = parsedUrl.pathname.split('/').slice(2).join(':')
@@ -107,7 +115,7 @@ export const useTools = () => {
             result.preview = getImageLink(fileId, page.id, 4000)
             result.fileId = fileId
             result.img = getImageLink(fileId, page.id, 128)
-            result.url = `?index=${imagesLength.value + index}`
+            // result.url = ''
           } else if (file.type === "external" && file.external && file.external.url) {
 
             result.src = file.external.url ? file.external.url.replace('https://prod-files-secure.s3.us-west-2.amazonaws.com', '') : ''
