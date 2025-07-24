@@ -17,21 +17,34 @@
           v-if="colorShiftOnHover"
           class="color-overlay absolute inset-0 rounded-[10px] bg-gradient-to-tr from-pink-500/50 to-sky-500/50 opacity-0 pointer-events-none"
         />
-        <NuxtImg
+        <!--<NuxtImg
           v-if="!isCurrentLoaded?.[item.id]"
           provider="notion"
           :src="item.srcLoading"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px] filter blur-[10px]"
-        />
+        />-->
         <NuxtImg
           :src="item.src"
           :alt="item.id"
           provider="notion"
           class="absolute inset-0 w-full h-full object-cover rounded-[10px]"
-          fetchpriority="high"
           quality="80"
           @load="currentImageLoaded(item.id)"
-        />
+          :custom="true"
+          v-slot="{ src, isLoaded, imgAttrs }"
+        >
+          <img
+            v-if="isLoaded"
+            v-bind="imgAttrs"
+            fetchpriority="high"
+            :src="src"
+          >
+          <img
+            v-else
+            :src="item.srcLoading"
+            alt="placeholder"
+          >
+        </NuxtImg>
       </div>
     </div>
   </div>
