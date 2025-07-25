@@ -16,9 +16,11 @@ const { notionGetImages, notionGetMoreImages } = useNotion()
 await notionGetImages()
 
 const images = ref<SimpleImage[]>([])
-const isFirstLoad = ref(true)
 const refGallery = ref()
 const isReady = ref(false)
+
+const refLoadmore = useTemplateRef<HTMLDivElement>('refLoadmore')
+const isLoadmore = ref(false)
 
 const setImagesHeight = async () => {
   const tasks = currentImages.value
@@ -31,18 +33,12 @@ const setImagesHeight = async () => {
     });
   const resolvedImages = await Promise.all(tasks);
   images.value.push(...resolvedImages);
-  isFirstLoad.value = false;
-  isReady.value = true;
+  isReady.value = true
+  initScroll()
+  onLoadMoreForPreview();
 };
-
-const setOverflow = (hidden?: boolean) => {
-  const HTMLElement = document.querySelector('html')
-
-  if (hidden) HTMLElement?.setAttribute("style", "overflow: hidden")
-  else HTMLElement?.setAttribute("style", "overflow: auto")
-
-}
 const initScroll = () => {
+  gsap.registerPlugin(ScrollSmoother);
   ScrollSmoother.create({
     effects: false,
     smooth: 1.2,
@@ -50,17 +46,8 @@ const initScroll = () => {
   })
 }
 onMounted(async () => {
-  gsap.registerPlugin(ScrollSmoother);
-  initScroll()
-  setImagesHeight()
+  await setImagesHeight()
 })
-
-watch(() => route.query.index, (value) => {
-  setOverflow(!!value?.toString())
-})
-
-const refLoadmore = useTemplateRef<HTMLDivElement>('refLoadmore')
-const isLoadmore = ref(false)
 
 const loadMoreImages = async () => {
   if (currentCursor.value) {
@@ -85,13 +72,13 @@ const onBackToTop = () => {
   y.value = 0
 }
 
-onMounted(async () => {
+const onLoadMoreForPreview = async () => {
   if (route.query.index && Number(route.query.index) > images.value.length - 1) {
     isReady.value = true;
     await loadMoreImages()
     isReady.value = true;
   }
-})
+}
 
 </script>
 <template>
@@ -115,8 +102,8 @@ onMounted(async () => {
         <div class="mt-4 text-center">
           <UIcon v-show="isLoadmore" name="line-md:loading-loop" size="48" class="animate-spin text-gray-500 dark:text-gray-400" />
         </div>
+        <PreviewImageController v-if="isReady" :current-cursor="currentCursor" :images="images" :is-loading-more="isLoadmore" @load-more="loadMoreImages" />
       </ClientOnly>
-      <PreviewImageController v-if="isReady" :current-cursor="currentCursor" :images="images" :is-loading-more="isLoadmore" @load-more="loadMoreImages" />
     </div>
   </div>
 </template>

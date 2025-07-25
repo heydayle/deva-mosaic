@@ -39,24 +39,27 @@ onMounted(() => {
 
 </script>
 <template>
-  <div class="fixed top-0 z-10 px-4 py-4">
+  <div class="fixed w-full top-0 z-10 px-4 py-4 mx-auto">
     <GlassSurface
-      :width="width-48"
+      :width="width-(width*20/100)"
       :height="89"
       :border-radius="50"
       :blur="20"
       :displace="3.8"
-      :distortion-scale="100"
+      :distortion-scale="20"
       :saturation="0.8"
       :brightness="100"
+      class-name="m-auto"
     >
-      <div class="container p-4 flex justify-between items-center">
+      <div class="container px-4 flex justify-between items-center">
         <NBLogo class="flex-1" />
         <div class="flex flex-1 justify-end items-center space-x-2">
-          <UButton :to="github.href" variant="ghost" color="white" class="text-xl text-white dark:text-white">
+          <UButton :to="github.href" variant="ghost" color="white" class="cursor-target text-xl text-white dark:text-white">
             <UIcon :name="github.icon" size="22" class="text-xl"/>
           </UButton>
-          <SelectLanguage />
+          <UButton to="https://thinh.io.vn" variant="link" color="white" class="cursor-target text-xl mt-2">
+            Thinh Le
+          </UButton>
         </div>
       </div>
       <!-- <div ref="refWarning" class="fixed top-1/2 transfrom -translate-y-1/2 p-4 z-[999999] opacity-0 bg-white-50/50 dark:bg-black/90 h-dvh">

@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/ui',
     '@vueuse/nuxt',
-    '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@nuxt/fonts',
     '@nuxtjs/eslint-module',
@@ -43,38 +42,16 @@ export default defineNuxtConfig({
       }
     },
     domains: ['www.notion.so', 'notion.so']
-    // provider: 'notion',
-    // notion: {
-    //   baseURL: 'https://www.notion.so',
-    // },
   },
   vite: {
     server: {
       allowedHosts: ['localhost', '.dev'],
     },
   },
-  i18n: {
-    defaultLocale: 'en',
-    strategy: 'prefix',
-    locales: [
-        {
-          code: 'en',
-          name: 'English',
-          flag: 'twemoji:flag-united-kingdom',
-          file: './locales/en.ts',
-        },
-        {
-          code: 'vi',
-          name: 'Tiếng Việt',
-          flag: 'twemoji:flag-vietnam',
-          file: './locales/vi.ts',
-        },
-    ],
-  },
   fonts: {
-    // families: [
-    //   { name: 'Be Vietnam Pro', provider: 'google' },
-    // ],
+    families: [
+      { name: 'Be Vietnam Pro', provider: 'google' },
+    ],
     defaults: {
       weights: [400, 500, 600, 700, 800, 900],
       styles: ['normal', 'italic'],

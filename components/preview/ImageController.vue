@@ -2,6 +2,7 @@
 import { useWindowSize, useIntersectionObserver } from "@vueuse/core"
 import { UseDocumentVisibility } from "@vueuse/components"
 import { useTemplateRef } from 'vue'
+import GlassSurface from "../vue-bits/GlassSurface/GlassSurface.vue";
 
 const props = defineProps<{
   images: SimpleImage[]
@@ -120,40 +121,47 @@ const { stop } = useIntersectionObserver(
               provider="notion"
               class="m-auto transition duration-300 rounded-xl max-h-[calc(100vh-160px)] md:!max-h-[calc(100vh-120px)]"
               :custom="true"
+              loading="lazy"
               v-slot="{ src, isLoaded, imgAttrs }"
             >
               <img
-                v-show="isLoaded"
+                v-if="isLoaded"
                 v-bind="imgAttrs"
                 fetchPriority="high"
                 :src="src"
               >
-              <img
-                v-show="!isLoaded"
-                preload
-                :src="currentImageFocusing.srcLoading"
-                alt="placeholder"
-                class="m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
-              >
+              <div v-if="!isLoaded" class="relative">
+                <UIcon
+                  name="line-md:loading-loop"
+                  size="48"
+                  class="absolute top-1/2 left-1/2 tranform -translate-x-1/2 text-white"
+                />
+                <img
+                  preload
+                  :src="currentImageFocusing.srcLoading"
+                  alt="placeholder"
+                  class="m-auto h-[calc(100vh-160px)] md:!h-[calc(100vh-120px)] rounded-xl"
+                >
+              </div>
             </NuxtImg>
           </div>
           <div class="cursor-none">
             <div class="fixed md:!absolute top-4 right-4 z-10 transform -translate-x-1/2 flex flex-col items-center space-y-4">
-              <NuxtLinkLocale
+              <NuxtLink
                 to="/"
                 class="!text-white-50 text-4xl group"
                 title="Close Preview"
               >
                 <UIcon name="flowbite:close-outline" class="cursor-target close-button" />
-              </NuxtLinkLocale>
-              <NuxtLinkLocale
+              </NuxtLink>
+              <NuxtLink
                 :to="currentImageFocusing.preview"
                 target="_blank"
                 class="!text-white-50 text-4xl group"
                 title="Download Image"
               >
                 <UIcon name="ph:download-simple" class="cursor-target close-button" />
-              </NuxtLinkLocale>
+              </NuxtLink>
               <NBColorMode />
             </div>
             <UButton
@@ -178,13 +186,20 @@ const { stop } = useIntersectionObserver(
      <div
         id="mini-gallery"
         ref="refMiniGallery"
-        class="mini-gallery fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[220px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto bg-white/80 border-l border-l-black dark:bg-black/80"
+        class="mini-gallery fixed bottom-0 left-0 md:right-0 md:!left-[unset] md:!bottom-[unset] md:top-0 m-auto p-4 w-screen md:!w-unset md:!max-w-[220px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto border-l border-l-black"
       >
-        <div
-          class="mini-gallery flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full"
-        >
+        <!-- <GlassSurface
+        :border-radius="0"
+        :blur="20"
+        :displace="3.8"
+        :distortion-scale="10"
+        :saturation="0.8"
+        :brightness="90"
+           class-name="w-screen md:!w-unset md:!max-w-[220px] h-[140px] md:!h-screen overflow-x-auto overflow-y-auto border-l border-l-black"
+        > -->
+        <div class="mini-gallery flex md:flex-col items-center space-x-4 md:space-y-4 md:space-x-0 w-full">
           <div v-for="(item, index) in images" :key="index" class="xs:w-[50px] md:w-[128px]">
-              <NuxtLinkLocale
+              <NuxtLink
                 :to="{ path: '/', query: { index } }"
                 class="w-[50px] md:!w-[128px] block"
               >
@@ -193,19 +208,20 @@ const { stop } = useIntersectionObserver(
                       :id="'index-' + index"
                       :src="item.img"
                       :class="{ 'filter saturate-[0]': parseInt(route.query.index as string) === index }"
-                      class="mouse-object image-item cursor-none transition duration-300 block duration-600"
+                      class="cursor-target w-full transition duration-300 block duration-600"
                       width="50 md:128"
                       alt="img"
                       @load="imageIsReady(visibility)"
                     />
                 </UseDocumentVisibility>
-              </NuxtLinkLocale>
+              </NuxtLink>
               <div v-if="index === images.length - 1" ref="refLoadmore" />
           </div>
           <div class="mt-4 text-center">
             <UIcon v-show="isLoadingMore" size="32" name="line-md:downloading-loop" />
           </div>
         </div>
+        <!-- </GlassSurface> -->
       </div> 
     </UModal>
   </div>

@@ -12,7 +12,7 @@ defineProps<{
 <template>
   <div>
       <NuxtLinkLocale to="/" class="close-button flex-1 inline-flex space-x-4 items-center">
-        <img src="/logo-text.svg" alt="library-icon" class="cursor-target h-12 p-2 bg-black rounded-xl rounded-br-none">
+        <img src="/logo-text.svg" alt="library-icon" class="cursor-target h-12">
         <template v-if="withTitle">
           <span class="text-[10px] text-primary px-2 py-1 border border-primary rounded-xl">{{ version }}</span>
         </template>

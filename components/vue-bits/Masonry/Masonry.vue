@@ -17,12 +17,6 @@
           v-if="colorShiftOnHover"
           class="color-overlay absolute inset-0 rounded-[10px] bg-gradient-to-tr from-pink-500/50 to-sky-500/50 opacity-0 pointer-events-none"
         />
-        <!--<NuxtImg
-          v-if="!isCurrentLoaded?.[item.id]"
-          provider="notion"
-          :src="item.srcLoading"
-          class="absolute inset-0 w-full h-full object-cover rounded-[10px] filter blur-[10px]"
-        />-->
         <NuxtImg
           :src="item.src"
           :alt="item.id"
@@ -86,6 +80,7 @@ const props = withDefaults(defineProps<MasonryProps>(), {
   blurToFocus: true,
   colorShiftOnHover: false
 });
+const emit = defineEmits(['onReady']);
 
 const useMedia = (queries: string[], values: number[], defaultValue: number) => {
   const get = () => values[queries.findIndex(q => matchMedia(q).matches)] ?? defaultValue;
@@ -247,6 +242,7 @@ const currentImageLoaded = (id: string) => {
 watchEffect(() => {
   preloadImages(props.items.map(i => i.img)).then(() => {
     imagesReady.value = true;
+    emit('onReady');
   });
 });
 

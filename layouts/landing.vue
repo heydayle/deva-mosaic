@@ -10,10 +10,10 @@ import TargetCursor from '~/components/vue-bits/TargetCursor/TargetCursor.vue';
   </div>
   <client-only>
     <TargetCursor :spin-duration="0" :hide-default-cursor="true" />
+    <LayoutsHeader />
   </client-only>
-  <LayoutsHeader />
   <div id="main-layout" >
-    <div class="m-auto max-w-[96%] overflow-auto pt-[90px]">
+    <div class="m-auto max-w-[96%] overflow-auto pt-[96px]">
         <NuxtPage />
       </div>
   </div>
