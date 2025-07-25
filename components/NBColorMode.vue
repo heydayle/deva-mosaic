@@ -18,6 +18,9 @@ const isDark = computed({
       :width="44"
       :height="44"
       :border-radius="100"
+      :blur="11"
+      :displace="0.7"
+      :saturation="1"
     >
       <UButton
         class="cursor-target"
@@ -25,7 +28,7 @@ const isDark = computed({
         color="gray"
         variant="link"
         :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
-        :ui="{ rounded: 'rounded-full', icon: { base: 'flex-shrink-0 close-button' } }"
+        :ui="{ rounded: 'rounded-full', icon: { base: 'flex-shrink-0' } }"
         @click="isDark = !isDark"
       />
     </GlassSurface>

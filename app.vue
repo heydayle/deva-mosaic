@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import TargetCursor from './components/vue-bits/TargetCursor/TargetCursor.vue';
-
 const { app } = useAppConfig()
 useHead({
   link: [
@@ -62,13 +60,6 @@ useHead({
 </script>
 <template>
   <div>
-    <div class="fixed z-[1] bottom-24 right-12 flex flex-col space-y-4">
-      <NBColorMode />
-      <div id="back-to-top" />
-    </div>
-    <client-only>
-      <TargetCursor :spin-duration="0" :hide-default-cursor="true" />
-    </client-only>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
